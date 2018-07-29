@@ -12,12 +12,22 @@ class TestCountTiles(object):
 
     def test_uneven_borders(self):
         """Should count correctly when borders are uneven and not all tiles fit.
-        This coul happen on 'micelklaneous' tile sheets"""
+        This could happen on 'miscellaneous' tile sheets"""
         num_tiles_in_each_row, num_tiles_in_each_col = tile_loader.count_tiles(
             image = pygame.image.load("assets/NES-TheLegendofZelda-IntroAndFileSelect.png"),
             tile_size = (256, 240),
-            border = (3, 4))
-        assert (num_tiles_in_each_row, num_tiles_in_each_col) == (2, 3)
+            border = (3, 3))
+        assert (num_tiles_in_each_row, num_tiles_in_each_col) == (2, 4)
+
+    def test_offset(self):
+        """Should count correctly when there is an offset.
+        This could happen on 'miscellaneous' tile sheets"""
+        num_tiles_in_each_row, num_tiles_in_each_col = tile_loader.count_tiles(
+            image = pygame.image.load("assets/NES-TheLegendofZelda-IntroAndFileSelect.png"),
+            tile_size = (256, 240),
+            border = (3, 3),
+            offset = (-1, -1))
+        assert (num_tiles_in_each_row, num_tiles_in_each_col) == (2, 4)
 
 
 class TestTileUpperLeftCoordinates(object):
@@ -57,3 +67,24 @@ class TestTileUpperLeftCoordinates(object):
             tile_size = (10, 32),
             border = (1, 1))
         assert (x, y) == (12, 34)
+
+    def test_offset(self):
+        """Should work correctly when there is an offset.
+        This could happen on 'miscellaneous' tile sheets"""
+        x, y = tile_loader.tile_upper_left_coordinates(
+            col = 0,
+            row = 0,
+            tile_size = (16, 16),
+            border = (3, 3),
+            offset = (-1, -2))
+        assert (x, y) == (2, 1)
+
+    def test_title_offset(self):
+        """Should give the correct coordinates ofr the first tile for the totle screem"""
+        x, y = tile_loader.tile_upper_left_coordinates(
+            col = 0,
+            row = 0,
+            tile_size = (16, 16),
+            border = (3, 3),
+            offset = (0, 1))
+        assert (x, y) == (3, 4)
