@@ -1,10 +1,10 @@
 """Configuration for the pylink Game."""
 import numpy
 
-nes_screen_resolution = (256, 240)
+nes_window_size = (256, 240)
 """Original NES screen resolution"""
 
-nes_zelda_tile_size = (16, 16)
+nes_tile_size = (16, 16)
 """Original Zelda tile size"""
 
 window_size_in_tiles = (16, 15)
