@@ -67,12 +67,18 @@ def load_tile_table(filename, original_tile_size, border=0, final_tile_size=(-1,
 if __name__=='__main__':
     """Draw the loaded and scaled tiles on the screen"""
     pygame.init()
-    screen = pygame.display.set_mode((1280, 1024))
-    screen.fill((255, 255, 255))
+    screen = pygame.display.set_mode(pylink_config.window_size)
+    screen.fill((0, 0, 0))
     table = load_tile_table("assets/NES-TheLegendofZelda-OverworldTiles.png", (16, 16), 1, pylink_config.tile_size)
     for y, row in enumerate(table):
         for x, tile in enumerate(row):
-            screen.blit(tile, (x*pylink_config.tile_size[0], y*pylink_config.tile_size[1]))
+            screen.blit(
+                tile,
+                (
+                    pylink_config.map_upper_left[0] + (x * pylink_config.tile_size[0]),
+                    pylink_config.map_upper_left[1] + (y * pylink_config.tile_size[1])
+                )
+            )
     pygame.display.flip()
     while pygame.event.wait().type != pygame.locals.QUIT:
         pass
