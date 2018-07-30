@@ -44,7 +44,9 @@ def load_tile_table(
     original_tile_size,
     border = (0 ,0),
     offset = (0, 0),
-    final_tile_size=(-1, -1)):
+    final_tile_size=(None, None),
+    tile_scaling=(None, None),
+    colorkey_location = (None, None)):
     """Load a tile sheet from a file.
 
     filename - The file to load the sheet from. Should be a png file.
@@ -52,6 +54,8 @@ def load_tile_table(
     border - The (width, height) of the border around *each* tile in the file
     offset - The (wdith, height) of the initial offset used to find the first tile
     final_tile_size - The (width, height) each tile should be scaled to for the game
+    tile_scaling - The amount (width, height) each tile should be scaled to for the game
+    colorkey_location - If present, the location within the image to sample for the colorkey
 
     Each row is expected to be layed out as:
         offset width + border + tile width + border + ... + tile width + border
@@ -59,8 +63,15 @@ def load_tile_table(
     Each column is similarly expected to be layed out as:
         offset height + border + tile height + board + ... + tile height +  border
     """
-    if (final_tile_size == (-1, -1)):
-        final_tile_size = original_tile_size
+    if ((final_tile_size != (None, None)) and (tile_scaling != (None, None))):
+        raise ValueError('final_tile_size and tile_scaling cannot both be specified in the same call')
+
+    if (tile_scaling == (None, None)):
+        tile_scaling = (1, 1)
+
+    if (final_tile_size == (None, None)):
+        final_tile_size = tuple(map(int, numpy.multiply(original_tile_size, tile_scaling)))
+
     image = pygame.image.load(filename).convert()
     num_tiles_in_each_row, num_tiles_in_each_col = count_tiles(image, original_tile_size, border, offset)
     tile_table = []
@@ -70,7 +81,11 @@ def load_tile_table(
         for tile_col in range(0, num_tiles_in_each_row):
             x, y = tile_upper_left_coordinates(tile_col, tile_row, original_tile_size, border, offset)
             rect = (x, y, original_tile_size[0], original_tile_size[1])
-            line.append(pygame.transform.smoothscale(image.subsurface(rect), final_tile_size))
+            surface = pygame.transform.scale(image.subsurface(rect), final_tile_size)
+            if (colorkey_location != (None, None)):
+                colorkey = surface.get_at(colorkey_location)
+                surface.set_colorkey(colorkey)
+            line.append(surface)
     return tile_table
 
 if __name__=='__main__':

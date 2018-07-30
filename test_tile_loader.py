@@ -1,3 +1,4 @@
+import pytest
 import pygame
 import tile_loader
 
@@ -80,7 +81,7 @@ class TestTileUpperLeftCoordinates(object):
         assert (x, y) == (2, 1)
 
     def test_title_offset(self):
-        """Should give the correct coordinates ofr the first tile for the totle screem"""
+        """Should give the correct coordinates of the first tile for the title screen"""
         x, y = tile_loader.tile_upper_left_coordinates(
             col = 0,
             row = 0,
@@ -88,3 +89,25 @@ class TestTileUpperLeftCoordinates(object):
             border = (3, 3),
             offset = (0, 1))
         assert (x, y) == (3, 4)
+
+    def test_waterfall_offset(self):
+        """Should give the correct coordinates of the first waterfall tile for the title screen"""
+        x, y = tile_loader.tile_upper_left_coordinates(
+            col = 0,
+            row = 0,
+            tile_size = (32, 59),
+            border = (6, 0),
+            offset = (340, 514))
+        assert (x, y) == (346, 514)
+
+class TestLoadTileTable(object):
+
+    def test_both_final_size_and_scaling_together(self):
+        """Should raise a ValueError if both final size and scaling are given together"""
+        with pytest.raises(ValueError) as error_info:
+            tile_table =  tile_loader.load_tile_table(
+                filename = 'junk',
+                original_tile_size = (16, 16),
+                final_tile_size = (48, 48),
+                tile_scaling = (3, 3))
+        assert str(error_info.value) == 'final_tile_size and tile_scaling cannot both be specified in the same call' 

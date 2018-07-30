@@ -13,6 +13,10 @@ window_size_in_tiles = (16, 15)
 tile_size = (48, 48)
 """Size, in pixels, of each time in the game as (x, y)"""
 
+tile_scaling = tuple(numpy.divide(tile_size, nes_tile_size))
+"""The amount (x_factor, y_factor) to scale each tile when loading.
+Scaling is done by multiplying the size when the tile is loaded by the factors given."""
+
 window_size = tuple(map(int, numpy.multiply(tile_size, window_size_in_tiles)))
 """Total window size, in pixels"""
 
