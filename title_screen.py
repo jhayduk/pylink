@@ -17,24 +17,28 @@ import title_waterfall
 __shift_waves = False
 """If true, shift waves down this time through the event loop"""
 
-def event_loop(screen, background_tiles, waterfall_background, waterfall_waves):
+def event_loop(screen, background_tiles, waterfall_background, waterfall_waves, waterfall_spray):
     """Runs the event loop for the title screen
 
     Inputs:
         screen - A pygame screen instance.
-        background_tiles - An array of the tiles to loop through to animate the screen
+        background_tiles - An array of the tiles to loop through to animate the background
         waterfall_background - The tile for the background of the waterfall
-        waterfall_waves - The tiles for the waves on the waterfall
+        waterfall_waves - The tile for the waves on the waterfall
+        waterfall_spray - An array of the tiles to loop through to animate the spray at
+            the top of the waterfall
     """
     global __shift_waves
     screen.fill((0, 0, 0))
     pygame.display.flip()
     background_loop = itertools.cycle(background_tiles)
+    spray_loop = itertools.cycle(waterfall_spray)
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
                 sys.exit()
         screen.blit(next(background_loop), (0, 0))
+        screen.blit(next(spray_loop), (237, 528))
         screen.blit(waterfall_background, (240, 543))
         if (__shift_waves):
             screen.blit(waterfall_waves, (240, 543))
@@ -77,7 +81,8 @@ def go(screen):
         final_tile_size = pylink_config.window_size)
     waterfall_background = title_waterfall.background()
     waterfall_waves = title_waterfall.waves()
-    event_loop(screen, background_tiles, waterfall_background, waterfall_waves)
+    waterfall_spray = title_waterfall.spray();
+    event_loop(screen, background_tiles, waterfall_background, waterfall_waves, waterfall_spray)
 
 if __name__=='__main__':
     """Draw the loaded and scaled tiles on the screen"""
