@@ -104,10 +104,9 @@ class TestLoadTileTable(object):
 
     def test_both_final_size_and_scaling_together(self):
         """Should raise a ValueError if both final size and scaling are given together"""
-        with pytest.raises(ValueError) as error_info:
+        with pytest.raises(ValueError, match=r'final_tile_size and tile_scaling cannot both be specified in the same call') as error_info:
             tile_table =  tile_loader.load_tile_table(
                 filename = 'junk',
                 original_tile_size = (16, 16),
                 final_tile_size = (48, 48),
                 tile_scaling = (3, 3))
-        assert str(error_info.value) == 'final_tile_size and tile_scaling cannot both be specified in the same call' 
