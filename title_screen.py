@@ -6,6 +6,7 @@ a key. Then transitions off the screen.
 To go to the title screen, use title_screen.go()
 """
 import sys
+import time
 import pygame
 import pygame.locals
 import pylink_config
@@ -14,8 +15,13 @@ import itertools
 import numpy
 import title_waterfall
 
-__shift_waves = False
-"""If true, shift waves down this time through the event loop"""
+def alphaValue(elapsed_ns):
+    """Used to fade out the screen between 8 and 16 seconds in"""
+    if (elapsed_ns < 8.0):
+        return 0
+    if (elapsed_ns > 16.0):
+        return 255
+    return int((elapsed_ns - 8.0) * (255.0 / 8.0))
 
 def event_loop(screen, background_tiles, waterfall_background, waterfall_waves, waterfall_spray):
     """Runs the event loop for the title screen
@@ -28,25 +34,34 @@ def event_loop(screen, background_tiles, waterfall_background, waterfall_waves, 
         waterfall_spray - An array of the tiles to loop through to animate the spray at
             the top of the waterfall
     """
-    global __shift_waves
+    title_frametime_msecs = 75
+    shift_waves = False
+    start_time_secs = time.time();
+
     screen.fill((0, 0, 0))
     pygame.display.flip()
     background_loop = itertools.cycle(background_tiles)
     spray_loop = itertools.cycle(waterfall_spray)
+    alphaSurface = pygame.Surface(pylink_config.window_size)
+    alphaSurface.fill((0, 0, 0))
+    alphaSurface.set_alpha(0)
     while 1:
+        elapsed_secs = time.time() - start_time_secs
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
-                sys.exit()
+                return
         screen.blit(next(background_loop), (0, 0))
         screen.blit(next(spray_loop), (237, 528))
         screen.blit(waterfall_background, (240, 543))
-        if (__shift_waves):
+        if (shift_waves):
             screen.blit(waterfall_waves, (240, 543))
         else:
             screen.blit(waterfall_waves, (240, 513))
-        __shift_waves = not __shift_waves
+        shift_waves = not shift_waves
+        alphaSurface.set_alpha(alphaValue(elapsed_secs))
+        screen.blit(alphaSurface,(0,0))
         pygame.display.flip()
-        pygame.time.wait(75)
+        pygame.time.wait(title_frametime_msecs)
 
 def go(screen):
     """Shows the title screen and waits for the user to hit 'start' (any key)
@@ -82,7 +97,10 @@ def go(screen):
     waterfall_background = title_waterfall.background()
     waterfall_waves = title_waterfall.waves()
     waterfall_spray = title_waterfall.spray();
+    pygame.mixer.music.load('assets/01Intro.mp3')
+    pygame.mixer.music.play()
     event_loop(screen, background_tiles, waterfall_background, waterfall_waves, waterfall_spray)
+    pygame.mixer.music.stop()
 
 if __name__=='__main__':
     """Draw the loaded and scaled tiles on the screen"""
