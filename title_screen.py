@@ -14,6 +14,7 @@ import tile_loader
 import itertools
 import numpy
 import title_waterfall
+import title_intro_text
 
 def alphaValue(elapsed_ns):
     """Used to fade out the screen between 8 and 16 seconds in"""
@@ -23,7 +24,13 @@ def alphaValue(elapsed_ns):
         return 255
     return int((elapsed_ns - 8.0) * (255.0 / 8.0))
 
-def event_loop(screen, background_tiles, waterfall_background, waterfall_waves, waterfall_spray):
+def event_loop(
+    screen,
+    background_tiles,
+    waterfall_background,
+    waterfall_waves,
+    waterfall_spray,
+    intro_text):
     """Runs the event loop for the title screen
 
     Inputs:
@@ -33,6 +40,7 @@ def event_loop(screen, background_tiles, waterfall_background, waterfall_waves, 
         waterfall_waves - The tile for the waves on the waterfall
         waterfall_spray - An array of the tiles to loop through to animate the spray at
             the top of the waterfall
+        intro_text - The intro text to scroll as one image.
     """
     title_frametime_msecs = 75
     shift_waves = False
@@ -47,21 +55,45 @@ def event_loop(screen, background_tiles, waterfall_background, waterfall_waves, 
     alphaSurface.set_alpha(0)
     while 1:
         elapsed_secs = time.time() - start_time_secs
+        if (elapsed_secs >= 82.75):
+            elapsed_secs = 0
+            start_time_secs = time.time();
+            pygame.mixer.music.play()
+
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
                 return
-        screen.blit(next(background_loop), (0, 0))
-        screen.blit(next(spray_loop), (237, 528))
-        screen.blit(waterfall_background, (240, 543))
-        if (shift_waves):
-            screen.blit(waterfall_waves, (240, 543))
-        else:
-            screen.blit(waterfall_waves, (240, 513))
-        shift_waves = not shift_waves
-        alphaSurface.set_alpha(alphaValue(elapsed_secs))
-        screen.blit(alphaSurface,(0,0))
-        pygame.display.flip()
-        pygame.time.wait(title_frametime_msecs)
+
+        if (elapsed_secs < 16):
+            # Show waterfall
+            screen.blit(next(background_loop), (0, 0))
+            screen.blit(next(spray_loop), (237, 528))
+            screen.blit(waterfall_background, (240, 543))
+            if (shift_waves):
+                screen.blit(waterfall_waves, (240, 543))
+            else:
+                screen.blit(waterfall_waves, (240, 513))
+            shift_waves = not shift_waves
+            alphaSurface.set_alpha(alphaValue(elapsed_secs))
+            screen.blit(alphaSurface,(0,0))
+            pygame.display.flip()
+            pygame.time.wait(title_frametime_msecs)
+        elif (16 <= elapsed_secs < 23.5):
+            # scroll intro story up
+            screen.fill((0, 0, 0))
+            screen.blit(intro_text, title_intro_text.location(elapsed_secs))
+            pygame.display.flip()
+        elif (23.5 <= elapsed_secs < 27.5):
+            # pause intro story
+            pass
+        elif (27.5 <= elapsed_secs < 74.5):
+            # scroll rest of intro/items list
+            screen.fill((0, 0, 0))
+            screen.blit(intro_text, title_intro_text.location(elapsed_secs))
+            pygame.display.flip()
+        elif (74.5 <= elapsed_secs):
+            # pause item list
+            pass
 
 def go(screen):
     """Shows the title screen and waits for the user to hit 'start' (any key)
@@ -96,10 +128,11 @@ def go(screen):
         final_tile_size = pylink_config.window_size)
     waterfall_background = title_waterfall.background()
     waterfall_waves = title_waterfall.waves()
-    waterfall_spray = title_waterfall.spray();
+    waterfall_spray = title_waterfall.spray()
+    intro_text = title_intro_text.intro_text()
     pygame.mixer.music.load('assets/01Intro.mp3')
     pygame.mixer.music.play()
-    event_loop(screen, background_tiles, waterfall_background, waterfall_waves, waterfall_spray)
+    event_loop(screen, background_tiles, waterfall_background, waterfall_waves, waterfall_spray, intro_text)
     pygame.mixer.music.stop()
 
 if __name__=='__main__':

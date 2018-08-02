@@ -44,12 +44,6 @@ if __name__=='__main__':
     pygame.init()
     screen = pygame.display.set_mode(pylink_config.window_size)
     screen.fill((0, 0, 0))
-    table = tile_loader.load_tile_table(
-        filename = "assets/NES-TheLegendofZelda-IntroAndFileSelect.png",
-        original_tile_size = (32, 59),
-        border = (6, 0),
-        offset = (340, 513),
-        tile_scaling = pylink_config.tile_scaling)
     screen.blit(background(), (0,0))
     screen.blit(waves(), (192, 0))
     spray_list = spray()
