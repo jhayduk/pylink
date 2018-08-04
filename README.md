@@ -2,4 +2,17 @@
 Just something to do to brush up on python
 
 
+## Setup
+```
 sudo -H pip install pygame
+sudo -H pip install pylint
+```
+
+## Run
+```
+pylint *.py && pytest -v && python pylink.py
+```
+
+## Notes
+- PEP8 Style
+- Google style doc strings
