@@ -3,6 +3,7 @@ import pygame
 import pygame.locals
 import numpy
 import pylink_config
+import game_screen
 
 def count_tiles(image, tile_size, border=(0, 0), offset=(0, 0)):
     """
@@ -172,9 +173,7 @@ def load_tile_table(
 
 if __name__ == '__main__':
     # Draw the loaded and scaled tiles on the screen
-    pygame.init()
-    MAIN_SCREEN = pygame.display.set_mode(pylink_config.WINDOW_SIZE)
-    MAIN_SCREEN.fill((0, 0, 0))
+    game_screen.init()
     TILE_TABLE = load_tile_table(
         filename="assets/NES-TheLegendofZelda-OverworldTiles.png",
         original_tile_size=(16, 16),
@@ -183,7 +182,7 @@ if __name__ == '__main__':
         final_tile_size=pylink_config.TILE_SIZE)
     for main_y, main_row in enumerate(TILE_TABLE):
         for main_x, tile in enumerate(main_row):
-            MAIN_SCREEN.blit(
+            game_screen.blit(
                 tile,
                 (
                     pylink_config.MAP_UPPER_LEFT[0]

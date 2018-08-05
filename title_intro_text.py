@@ -4,6 +4,7 @@ import pygame.locals
 import numpy
 import pylink_config
 import tile_loader
+import game_screen
 
 _FINISH_TITLE_FADE_AT_SECS = 16.0
 
@@ -109,13 +110,8 @@ def intro_text():
 
 if __name__ == '__main__':
     # Draw the loaded and scaled tiles on the screen
-    pygame.init()
-    MAIN_SCREEN = pygame.display.set_mode(pylink_config.WINDOW_SIZE)
-    MAIN_SCREEN.fill((0, 0, 0))
-    MAIN_SCREEN.blit(
-        intro_text(),
-        (2 * pylink_config.TILE_SCALING[0], 0)
-    )
+    game_screen.init()
+    game_screen.blit(intro_text(), (6, 0))
     pygame.display.flip()
     while pygame.event.wait().type != pygame.locals.QUIT:
         pass

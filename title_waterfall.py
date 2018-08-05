@@ -2,6 +2,7 @@
 import pygame
 import pygame.locals
 import pylink_config
+import game_screen
 import tile_loader
 
 def background():
@@ -44,14 +45,12 @@ def spray():
 
 if __name__ == '__main__':
     # Draw the loaded and scaled tiles on the screen.
-    pygame.init()
-    MAIN_SCREEN = pygame.display.set_mode(pylink_config.WINDOW_SIZE)
-    MAIN_SCREEN.fill((0, 0, 0))
-    MAIN_SCREEN.blit(background(), (0, 0))
-    MAIN_SCREEN.blit(waves(), (192, 0))
+    game_screen.init()
+    game_screen.blit(background(), (0, 0))
+    game_screen.blit(waves(), (192, 0))
     SPRAY_LIST = spray()
     for index in range(0, 5):
-        MAIN_SCREEN.blit(SPRAY_LIST[index], (384, 24 + (30 * index)))
+        game_screen.blit(SPRAY_LIST[index], (384, 24 + (30 * index)))
     pygame.display.flip()
     while pygame.event.wait().type != pygame.locals.QUIT:
         pass

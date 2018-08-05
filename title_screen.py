@@ -3,7 +3,7 @@
 Presents the animated title screen and waits for the user to hit
 a key. Then transitions off the screen.
 
-To go to the title screen, use title_screen.go()
+To go to the title screen, use title_screen.execute()
 """
 import time
 import itertools
@@ -13,9 +13,14 @@ import pylink_config
 import tile_loader
 import title_waterfall
 import title_intro_text
+import game_screen
 
 _START_TITLE_FADE_AT_SECS = 8.0
 _FINISH_TITLE_FADE_AT_SECS = 16.0
+_PAUSE_STORY_SCROLL_AT_SECS = 23.5
+_RESUME_STORY_SCROLL_AT_SECS = 27.5
+_FINISH_STORY_SCROLL_AT_SECS = 74.5
+_RESTART_TITLE_SHOT_AT_SECS = 82.75
 
 def alpha_value(elapsed_secs):
     """
@@ -39,9 +44,7 @@ def alpha_value(elapsed_secs):
         * (255.0 / _START_TITLE_FADE_AT_SECS)
     )
 
-#pylint: disable-msg=too-many-arguments
 def event_loop(
-        screen,
         background_tiles,
         waterfall_background,
         waterfall_waves,
@@ -51,7 +54,6 @@ def event_loop(
     Run the event loop for the title screen
 
     Args:
-        screen: A pygame screen instance.
         background_tiles: An array of the tiles to loop through to
             animate the background.
         waterfall_background: The tile for the background of the
@@ -65,7 +67,7 @@ def event_loop(
     shift_waves = False
     start_time_secs = time.time()
 
-    screen.fill((0, 0, 0))
+    game_screen.fill((0, 0, 0))
     pygame.display.flip()
     background_loop = itertools.cycle(background_tiles)
     spray_loop = itertools.cycle(waterfall_spray)
@@ -76,7 +78,7 @@ def event_loop(
     alpha_surface.set_alpha(0)
     while 1:
         elapsed_secs = time.time() - start_time_secs
-        if elapsed_secs >= 82.75:
+        if elapsed_secs >= _RESTART_TITLE_SHOT_AT_SECS:
             elapsed_secs = 0
             start_time_secs = time.time()
             pygame.mixer.music.play()
@@ -86,53 +88,47 @@ def event_loop(
                 return
 
         if elapsed_secs < _FINISH_TITLE_FADE_AT_SECS:
-            # Show waterfall
-            screen.blit(next(background_loop), (0, 0))
-            screen.blit(next(spray_loop), (237, 528))
-            screen.blit(waterfall_background, (240, 543))
+            # Show waterfall from the start of the display of the
+            # title shot until it fully fades out
+            game_screen.blit(next(background_loop), (0, 0))
+            game_screen.blit(next(spray_loop), (237, 528))
+            game_screen.blit(waterfall_background, (240, 543))
             if shift_waves:
-                screen.blit(waterfall_waves, (240, 543))
+                game_screen.blit(waterfall_waves, (240, 543))
             else:
-                screen.blit(waterfall_waves, (240, 513))
+                game_screen.blit(waterfall_waves, (240, 513))
             shift_waves = not shift_waves
             alpha_surface.set_alpha(alpha_value(elapsed_secs))
-            screen.blit(alpha_surface, (0, 0))
+            game_screen.blit(alpha_surface, (0, 0))
             pygame.display.flip()
             pygame.time.wait(title_frametime_msecs)
-        elif 16 <= elapsed_secs < 23.5:
-            # scroll intro story up
-            screen.fill((0, 0, 0))
-            screen.blit(
+        elif elapsed_secs < _PAUSE_STORY_SCROLL_AT_SECS:
+            # Once the title shot fades out, scroll the intro story up
+            # until just it is displayed
+            game_screen.fill((0, 0, 0))
+            game_screen.blit(
                 intro_text,
                 title_intro_text.location(elapsed_secs)
             )
             pygame.display.flip()
-        elif 23.5 <= elapsed_secs < 27.5:
+        elif elapsed_secs < _RESUME_STORY_SCROLL_AT_SECS:
             # pause intro story
             pass
-        elif 27.5 <= elapsed_secs < 74.5:
+        elif elapsed_secs < _FINISH_STORY_SCROLL_AT_SECS:
             # scroll rest of intro/items list
-            screen.fill((0, 0, 0))
-            screen.blit(
+            game_screen.fill((0, 0, 0))
+            game_screen.blit(
                 intro_text,
                 title_intro_text.location(elapsed_secs)
             )
             pygame.display.flip()
-        elif elapsed_secs >= 74.5:
+        else:
             # pause item list
             pass
-#pylint: enable-msg=too-many-arguments
 
-def execute(game_screen):
+def execute():
     """
-    Show the title screen and waits for the user to hit 'start'
-
-    Args:
-        game_screen: A pygame screen instance.
-
-    Returns:
-        Nothing.
-
+    Show the title screen and wait for the user to hit 'start'
     """
     table = tile_loader.load_tile_table(
         filename="assets/NES-TheLegendofZelda-IntroAndFileSelect.png",
@@ -166,7 +162,6 @@ def execute(game_screen):
     pygame.mixer.music.load('assets/01Intro.mp3')
     pygame.mixer.music.play()
     event_loop(
-        game_screen,
         background_tiles,
         waterfall_background,
         waterfall_waves,
@@ -177,7 +172,5 @@ def execute(game_screen):
 
 if __name__ == '__main__':
     # Load and display the title screen
-    pygame.init()
-    pygame.display.set_caption('The Legend of Zelda')
-    MAIN_SCREEN = pygame.display.set_mode(pylink_config.WINDOW_SIZE)
-    execute(MAIN_SCREEN)
+    game_screen.init()
+    execute()
