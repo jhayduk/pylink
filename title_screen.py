@@ -44,6 +44,7 @@ def alpha_value(elapsed_secs):
         * (255.0 / _START_TITLE_FADE_AT_SECS)
     )
 
+#pylint: disable-msg=too-many-branches
 def event_loop(
         background_tiles,
         waterfall_background,
@@ -62,6 +63,10 @@ def event_loop(
         waterfall_spray: An array of the tiles to loop through to
             animate the spray at the top of the waterfall.
         intro_text: The intro text to scroll as one image.
+
+    Returns:
+        continue: True if the game should continue when this returns
+            and False if it should exit.
     """
     title_frametime_msecs = 75
     shift_waves = False
@@ -85,7 +90,11 @@ def event_loop(
 
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
-                return
+                return False
+            if event.type == pygame.locals.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return False
+                return True
 
         if elapsed_secs < _FINISH_TITLE_FADE_AT_SECS:
             # Show waterfall from the start of the display of the
@@ -125,10 +134,15 @@ def event_loop(
         else:
             # pause item list
             pass
+#pylint: enable-msg=too-many-branches
 
 def execute():
     """
     Show the title screen and wait for the user to hit 'start'
+
+    Returns:
+        continue: True if the game should continue when this returns
+            and False if it should exit.
     """
     table = tile_loader.load_tile_table(
         filename="assets/NES-TheLegendofZelda-IntroAndFileSelect.png",
@@ -161,7 +175,7 @@ def execute():
     intro_text = title_intro_text.intro_text()
     pygame.mixer.music.load('assets/01Intro.mp3')
     pygame.mixer.music.play()
-    event_loop(
+    return_code = event_loop(
         background_tiles,
         waterfall_background,
         waterfall_waves,
@@ -169,6 +183,7 @@ def execute():
         intro_text
     )
     pygame.mixer.music.stop()
+    return return_code
 
 if __name__ == '__main__':
     # Load and display the title screen
