@@ -70,10 +70,11 @@ def event_loop(
     """
     title_frametime_msecs = 75
     shift_waves = False
-    start_time_secs = time.time()
 
     game_screen.fill((0, 0, 0))
     pygame.display.flip()
+    start_time_secs = time.time()
+    pygame.mixer.music.play()
     background_loop = itertools.cycle(background_tiles)
     spray_loop = itertools.cycle(waterfall_spray)
     #pylint: disable-msg=too-many-function-args
@@ -173,8 +174,8 @@ def execute():
     waterfall_waves = title_waterfall.waves()
     waterfall_spray = title_waterfall.spray()
     intro_text = title_intro_text.intro_text()
+    pygame.mixer.init()
     pygame.mixer.music.load('assets/01Intro.mp3')
-    pygame.mixer.music.play()
     return_code = event_loop(
         background_tiles,
         waterfall_background,
