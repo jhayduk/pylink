@@ -6,7 +6,9 @@ All copyrights are by they original owners.
 """
 import game_screen
 import title_screen
+import file_select_screen
 
 if __name__ == '__main__':
     game_screen.init()
-    title_screen.execute()
+    if title_screen.execute():
+        file_select_screen.execute()
