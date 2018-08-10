@@ -6,7 +6,7 @@ class TestCoordinate(object):
     """Tests for scale.coordinate()."""
 
     def test_origin(self):
-        """Should retun 0, 0 for the origin."""
+        """Should return 0, 0 for the origin."""
         assert scale.coordinates((0, 0)) == (0, 0)
 
     def test_far_corner(self):
