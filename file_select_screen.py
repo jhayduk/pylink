@@ -5,6 +5,7 @@ for it.
 
 To go to the title screen, use file_select_screen.execute()
 """
+import cPickle
 import pygame
 import pygame.locals
 import numpy
@@ -12,21 +13,46 @@ import pylink_config
 import tile_loader
 import game_screen
 
-_MENU = [
+#pylint: disable-msg=invalid-name
+_menu = [
     {"item":"file1", "icon_location": (117, 279)},
     {"item":"file2", "icon_location": (117, 351)},
     {"item":"file3", "icon_location": (117, 423)},
     {"item":"register", "icon_location": (117, 504)},
     {"item":"elimination", "icon_location": (117, 552)}
 ]
+_REGISTER_ITEM_INDEX = len(_menu) - 2
+_ELIMINATION_ITEM_INDEX = len(_menu) - 1
 
-#pylint: disable-msg=invalid-name
 _current_menu_index = 0
 #pylint: enable-msg=invalid-name
 
+def set_selectable(menu_index, selectable):
+    """Set the selectable flag for the given item in the menu"""
+    _menu[menu_index]["selectable"] = selectable
+
+def load_save_game(filename):
+    """
+    Loads the named filename to a dictionary.
+
+    Args:
+        filename: The name of the save game file. Technically, this
+            could be anything, but game1.sav, game2.sav and game3.sav
+            are the only officially used names.
+
+    Returns:
+        A dictionary containing the saved game parameters, or None if
+        there is no file by that name or if there was some trouble while
+        loading it.
+    """
+    try:
+        return cPickle.load(open(filename, "rb"))
+    except IOError:
+        return None
+
 def next_menu_item(direction):
     """
-    Return the next menu item in the list.
+    Return the next selectable menu item in the list.
 
     Args:
         direction: If direction is positive, return the next item
@@ -42,11 +68,43 @@ def next_menu_item(direction):
     global _current_menu_index
     #pylint: enable-msg=invalid-name,global-statement
     _current_menu_index += numpy.sign(direction)
-    if _current_menu_index >= len(_MENU):
+    if _current_menu_index >= len(_menu):
         _current_menu_index = 0
     elif _current_menu_index < 0:
-        _current_menu_index = len(_MENU) - 1
-    return _MENU[_current_menu_index]
+        _current_menu_index = len(_menu) - 1
+    if _menu[_current_menu_index].get("selectable") or direction == 0:
+        return _menu[_current_menu_index]
+    # Call again to find the next selectable menu item
+    return next_menu_item(direction)
+
+def init_menu():
+    """
+    Loads current save game info and initializes file select info
+    """
+    #pylint: disable-msg=invalid-name,global-statement
+    global _menu
+    global _current_menu_index
+    #pylint: enable-msg=invalid-name,global-statement
+
+    # Set elimination as non-selectable until we see a file load
+    _menu[_ELIMINATION_ITEM_INDEX]['selectable'] = False
+
+    num_selectable_files = 0
+    for index in range(3):
+        _menu[index]['save_game'] = load_save_game(
+            'game' + str(index) + '.sav')
+        if _menu[index]['save_game'] is not None:
+            _menu[index]['selectable'] = True
+            num_selectable_files += 1
+            # Actual file means elimination is now possible
+            _menu[_ELIMINATION_ITEM_INDEX]['selectable'] = True
+
+    _menu[_REGISTER_ITEM_INDEX]['selectable'] = num_selectable_files < 3
+
+    # Now, step to first item so that the next_menu_item logic
+    # can find the next selectable menu item
+    _current_menu_index = len(_menu) - 1
+    next_menu_item(1)
 
 # -v TODO out
 #pylint: disable-msg=unused-argument
@@ -117,6 +175,7 @@ def execute():
     pink_heart = table[0][1]
     pygame.mixer.init()
     pygame.mixer.music.load('assets/LOZ_Get_Rupee.wav')
+    init_menu()
     event_loop(game_screen, background, cursor, red_heart, pink_heart)
 
 if __name__ == '__main__':
