@@ -1,0 +1,9 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#14332D",
+        "titleBar.activeBackground": "#1C4740",
+        "titleBar.activeForeground": "#F7FCFB"
+    },
+    "python.pythonPath": "/usr/bin/python",
+    "python.linting.pylintEnabled": true
+}

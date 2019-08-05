@@ -5,7 +5,7 @@ so that other code does not need to worry about the specifics and does
 not need to pass around things like the screen surface.
 
 Note that coordinates are always given in game coordinates. Any scaling
-is expected to be done extrernaly.
+is expected to be done externaly.
 """
 import pygame
 import pygame.locals
