@@ -16,4 +16,4 @@ if __name__ == '__main__':
     SAVE_GAME = file_select_screen.execute()
     if SAVE_GAME is None:
         sys.exit(0)
-    print "DEBUG ----> SAVE_GAME = " + str(SAVE_GAME)
+    print("DEBUG ----> SAVE_GAME =", str(SAVE_GAME))

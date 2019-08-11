@@ -13,6 +13,11 @@ sudo -H pip install pylint
 pylint *.py && pytest -v && python pylink.py
 ```
 
+## Run (pylink3)
+```
+pylint *.py && python3 pylink3.py
+```
+
 ## Notes
 - PEP8 Style
 - Google style doc strings
