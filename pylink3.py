@@ -8,6 +8,7 @@ import sys
 import pygame
 import pylink_config
 import overworld
+import link
 
 if __name__ == '__main__':
     # Initialize the pygame engine
@@ -19,10 +20,12 @@ if __name__ == '__main__':
     screen.fill((0, 0, 0))
     pygame.display.flip()
 
-    # Load the overworld sheet
+    # Load the overworld sheet and display the starting position
     overworld.init()
-    screen.blit(overworld.submap(7, 7), pylink_config.PYLINK_MAP)
-    pygame.display.flip()
+
+    # Load Link's sprite sheet and place him at the starting position
+    # on the map.
+    link.init()
 
     # Init the frame rate font
     fps_font = pygame.font.Font(None, 30)  # pylint: disable=invalid-name
@@ -49,5 +52,5 @@ while 1:
     fps = int(clock.get_fps())  # pylint: disable=invalid-name
     screen.blit(fps_font.render(str(fps), True, pygame.Color('white')), pylink_config.PYLINK_SCOREBOARD)
 
-    # Update the screen
+    # Update the scoreboard
     pygame.display.update(pylink_config.PYLINK_SCOREBOARD)

@@ -4,22 +4,28 @@ import numpy
 
 NES_TO_PYLINK_SCALE_FACTOR = 3
 
+def scale_nes_tuple_to_pylink(nes_tuple):
+    """
+    Scale up an NES tuple to its pylink size.
+    """
+    return tuple(NES_TO_PYLINK_SCALE_FACTOR * numpy.array(nes_tuple))
+
 #: The entire screen
 NES_WINDOW_SIZE = (256, 240) # deprecated
 NES_WINDOW = pygame.Rect((0, 0), (256, 240))
-PYLINK_WINDOW = pygame.Rect((0, 0), tuple(NES_TO_PYLINK_SCALE_FACTOR * numpy.array(NES_WINDOW.size)))
+PYLINK_WINDOW = pygame.Rect((0, 0), scale_nes_tuple_to_pylink(NES_WINDOW.size))
 
 #: The scoreboard section at the top of the screen
 NES_SCOREBOARD = pygame.Rect((0, 0), (256, (4 * 16)))
-PYLINK_SCOREBOARD = pygame.Rect((0, 0), tuple(NES_TO_PYLINK_SCALE_FACTOR * numpy.array(NES_SCOREBOARD.size)))
+PYLINK_SCOREBOARD = pygame.Rect((0, 0), scale_nes_tuple_to_pylink(NES_SCOREBOARD.size))
 
 #: The map section under the map
 NES_MAP = pygame.Rect((0, (4 * 16)), (256, (240 - (4 * 16))))
-PYLINK_MAP = pygame.Rect(tuple(NES_TO_PYLINK_SCALE_FACTOR * numpy.array(
-    NES_MAP.topleft)), tuple(NES_TO_PYLINK_SCALE_FACTOR * numpy.array(NES_MAP.size)))
+PYLINK_MAP = pygame.Rect(scale_nes_tuple_to_pylink(NES_MAP.topleft), scale_nes_tuple_to_pylink(NES_MAP.size))
 
-#: Original Zelda tile size
+#: The size of each tile
 NES_TILE_SIZE = (16, 16)
+PYLINK_TILE_SIZE = scale_nes_tuple_to_pylink(NES_TILE_SIZE)
 
 #: Total game window size, in tiles
 WINDOW_SIZE_IN_TILES = (16, 15)

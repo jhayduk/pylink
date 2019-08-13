@@ -4,17 +4,21 @@ The overworld map.
 This module loads and manages the overworld map for the game.
 The entire map is loaded and scaled once when the init() function is
 called.
+
+Only use this module to display the map and to transition to adjacent maps.
 """
 import os
 import pygame
-import numpy
 import pylink_config
 
 __overworld_map = None # pylint: disable=invalid-name
+__current_submap_column = 7  # pylint: disable=invalid-name
+__current_submap_row = 7  # pylint: disable=invalid-name
 
 def init():
     """
-    Load and scale the entire map.
+    Load and scale the entire map, and then display the submap at the starting
+    location.
     This function must be called before any other functions in the
     module are called.
     """
@@ -23,8 +27,10 @@ def init():
     if __overworld_map is None:
         __overworld_map = pygame.image.load(os.path.join(
             'assets', 'NES-TheLegendofZelda-Overworld.png'))
-        __overworld_map = pygame.transform.scale(__overworld_map, tuple(pylink_config.NES_TO_PYLINK_SCALE_FACTOR * numpy.array(__overworld_map.get_size())))
+        __overworld_map = pygame.transform.scale(__overworld_map, pylink_config.scale_nes_tuple_to_pylink(__overworld_map.get_size()))
         __overworld_map.convert()
+    pygame.display.get_surface().blit(submap(7, 7), pylink_config.PYLINK_MAP)
+    pygame.display.flip()
 
 def submap(x, y):  # pylint: disable=invalid-name
     """
