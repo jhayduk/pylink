@@ -5,7 +5,7 @@ for it.
 
 To go to the title screen, use file_select_screen.execute()
 """
-import cPickle
+import pickle
 import pygame
 import pygame.locals
 import numpy
@@ -49,7 +49,7 @@ def load_save_game(filename):
         loading it.
     """
     try:
-        return cPickle.load(open(filename, "rb"))
+        return pickle.load(open(filename, "rb"))
     except IOError:
         return None
 

@@ -8,7 +8,7 @@ import sys
 import pygame
 import pylink_config
 import overworld
-import link
+from link import Link
 
 if __name__ == '__main__':
     # Initialize the pygame engine
@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     # Load Link's sprite sheet and place him at the starting position
     # on the map.
-    link.init()
+    link = Link.get_instance()
 
     # Init the frame rate font
     fps_font = pygame.font.Font(None, 30)  # pylint: disable=invalid-name
@@ -39,18 +39,23 @@ if __name__ == '__main__':
     # Initialize the clock to keep track of frame rate
     clock = pygame.time.Clock() # pylint: disable=invalid-name
 
-while 1:
-    # Check for quit
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
+    while 1:
+        # Check for quit
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-    # Update the clock
-    clock.tick()
-    score_board.fill((0, 0, 0))
-    screen.blit(score_board, pylink_config.PYLINK_SCOREBOARD)
-    fps = int(clock.get_fps())  # pylint: disable=invalid-name
-    screen.blit(fps_font.render(str(fps), True, pygame.Color('white')), pylink_config.PYLINK_SCOREBOARD)
+        # Update the clock
+        clock.tick()
+        score_board.fill((0, 0, 0))
+        screen.blit(score_board, pylink_config.PYLINK_SCOREBOARD)
+        fps = int(clock.get_fps())  # pylint: disable=invalid-name
+        screen.blit(fps_font.render(str(fps), True, pygame.Color('white')), pylink_config.PYLINK_SCOREBOARD)
 
-    # Update the scoreboard
-    pygame.display.update(pylink_config.PYLINK_SCOREBOARD)
+        # Update the characters
+        link.blit()
+
+        # Flip the screen to update everything
+        # Update the scoreboard section
+        # pygame.display.update(pylink_config.PYLINK_SCOREBOARD)
+        pygame.display.flip()

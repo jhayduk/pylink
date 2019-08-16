@@ -4,7 +4,7 @@ Presents the registration screen and processes name registration
 
 To go to the registration screen, use registration_screen.execute()
 """
-import cPickle
+import pickle
 import pygame
 import pygame.locals
 import numpy
@@ -61,7 +61,7 @@ def load_save_game(filename):
         loading it.
     """
     try:
-        return cPickle.load(open(filename, "rb"))
+        return pickle.load(open(filename, "rb"))
     except IOError:
         return None
 
