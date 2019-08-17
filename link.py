@@ -6,7 +6,7 @@ import pygame
 import numpy
 import pylink_config
 
-class Link:
+class Link(object):
     """
     The Link player object.
     This is a singleton object and must only be accessed with

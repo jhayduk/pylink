@@ -7,7 +7,7 @@ All copyrights are by they original owners.
 import sys
 import pygame
 import pylink_config
-import overworld
+from overworld import Overworld
 from link import Link
 
 if __name__ == '__main__':
@@ -21,11 +21,11 @@ if __name__ == '__main__':
     pygame.display.flip()
 
     # Load the overworld sheet and display the starting position
-    overworld.init()
+    overworld = Overworld.get_instance()  # pylint: disable=invalid-name
 
     # Load Link's sprite sheet and place him at the starting position
     # on the map.
-    link = Link.get_instance()
+    link = Link.get_instance()  # pylint: disable=invalid-name
 
     # Init the frame rate font
     fps_font = pygame.font.Font(None, 30)  # pylint: disable=invalid-name
@@ -52,7 +52,8 @@ if __name__ == '__main__':
         fps = int(clock.get_fps())  # pylint: disable=invalid-name
         screen.blit(fps_font.render(str(fps), True, pygame.Color('white')), pylink_config.PYLINK_SCOREBOARD)
 
-        # Update the characters
+        # Redraw the map area one layer at a time
+        overworld.blit()
         link.blit()
 
         # Flip the screen to update everything
