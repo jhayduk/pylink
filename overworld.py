@@ -21,6 +21,7 @@ class Overworld(object):
     should be displayed at any given time and draws it when blitted.
     """
     __instance = None
+
     @staticmethod
     def get_instance():
         """

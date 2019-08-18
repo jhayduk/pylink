@@ -4,11 +4,11 @@ pylink3 - a Python3 version of NES Legend of Zelda
 Done just for fun and for programming practice.
 All copyrights are by they original owners.
 """
-import sys
 import pygame
 import pylink_config
-from overworld import Overworld
+from events import Events
 from link import Link
+from overworld import Overworld
 
 if __name__ == '__main__':
     # Initialize the pygame engine
@@ -39,11 +39,12 @@ if __name__ == '__main__':
     # Initialize the clock to keep track of frame rate
     clock = pygame.time.Clock() # pylint: disable=invalid-name
 
+    # Initialize the events handler.
+    events = Events.get_instance()  # pylint: disable=invalid-name
+
     while 1:
-        # Check for quit
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
+        # Check for and process events
+        events.process()
 
         # Update the clock
         clock.tick()
