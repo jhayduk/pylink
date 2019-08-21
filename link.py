@@ -47,69 +47,66 @@ class Link(object):
             self.__current_subsurface = self.__get_facing_down_subsurface()
             Link.__instance = self
 
-    __facing_left_subsurface = None
+    __facing_left_subsurface = [None, None]
     def __get_facing_left_subsurface(self):
         """
         Return the subsurface that contains Link facing left.
         """
-        if self.__facing_left_subsurface is None:
-            left_offset = pylink_config.scale_nes_tuple_to_pylink((35, 11))
-            self.__facing_left_subsurface = self.__sprite_sheet.subsurface(
-                pygame.Rect(left_offset, pylink_config.PYLINK_TILE_SIZE))
-            self.__facing_left_subsurface.set_colorkey(
-                self.__facing_left_subsurface.get_at((0, 0)))
-            # The image in the sprite sheet is actually facing right, flip
-            # it to face left
-            self.__facing_left_subsurface = pygame.transform.flip(
-                self.__facing_left_subsurface, True, False)
-            # Turn off alpha so that colorkey works for transparency
-            self.__facing_left_subsurface.set_alpha(None)
-        return self.__facing_left_subsurface
+        for index, offset in enumerate([(35, 11), (52, 11)]):
+            if self.__facing_left_subsurface[index] is None:
+                self.__facing_left_subsurface[index] = self.__sprite_sheet.subsurface(pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
+                self.__facing_left_subsurface[index].set_colorkey(
+                    self.__facing_left_subsurface[index].get_at((0, 0)))
+                # The image in the sprite sheet is actually facing right, flip
+                # it to face left
+                self.__facing_left_subsurface[index] = pygame.transform.flip(
+                    self.__facing_left_subsurface[index], True, False)
+                # Turn off alpha so that colorkey works for transparency
+                self.__facing_left_subsurface[index].set_alpha(None)
+        return self.__facing_left_subsurface[0]
 
-    __facing_up_subsurface = None
+    __facing_up_subsurface = [None, None]
     def __get_facing_up_subsurface(self):
         """
         Return the subsurface that contains Link facing up.
         """
-        if self.__facing_up_subsurface is None:
-            forward_offset = pylink_config.scale_nes_tuple_to_pylink((69, 11))
-            self.__facing_up_subsurface = self.__sprite_sheet.subsurface(
-                pygame.Rect(forward_offset, pylink_config.PYLINK_TILE_SIZE))
-            self.__facing_up_subsurface.set_colorkey(
-                self.__facing_up_subsurface.get_at((0, 0)))
-            # Turn off alpha so that colorkey works for transparency
-            self.__facing_up_subsurface.set_alpha(None)
-        return self.__facing_up_subsurface
+        for index, offset in enumerate([(69, 11), (86, 11)]):
+            if self.__facing_up_subsurface[index] is None:
+                self.__facing_up_subsurface[index] = self.__sprite_sheet.subsurface(pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
+                self.__facing_up_subsurface[index].set_colorkey(
+                    self.__facing_up_subsurface[index].get_at((0, 0)))
+                # Turn off alpha so that colorkey works for transparency
+                self.__facing_up_subsurface[index].set_alpha(None)
+        return self.__facing_up_subsurface[1]
 
-    __facing_right_subsurface = None
+    __facing_right_subsurface = [None, None]
     def __get_facing_right_subsurface(self):
         """
         Return the subsurface that contains Link facing right.
         """
-        if self.__facing_right_subsurface is None:
-            right_offset = pylink_config.scale_nes_tuple_to_pylink((35, 11))
-            self.__facing_right_subsurface = self.__sprite_sheet.subsurface(
-                pygame.Rect(right_offset, pylink_config.PYLINK_TILE_SIZE))
-            self.__facing_right_subsurface.set_colorkey(
-                self.__facing_right_subsurface.get_at((0, 0)))
-            # Turn off alpha so that colorkey works for transparency
-            self.__facing_right_subsurface.set_alpha(None)
-        return self.__facing_right_subsurface
+        for index, offset in enumerate([(35, 11), (52, 11)]):
+            if self.__facing_right_subsurface[index] is None:
+                self.__facing_right_subsurface[index] = self.__sprite_sheet.subsurface(
+                    pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
+                self.__facing_right_subsurface[index].set_colorkey(self.__facing_right_subsurface[index].get_at((0, 0)))
+                # Turn off alpha so that colorkey works for transparency
+                self.__facing_right_subsurface[index].set_alpha(None)
+        return self.__facing_right_subsurface[0]
 
-    __facing_down_subsurface = None
+    __facing_down_subsurface = [None, None]
     def __get_facing_down_subsurface(self):
         """
         Return the subsurface that contains Link facing down.
         """
-        if self.__facing_down_subsurface is None:
-            forward_offset = pylink_config.scale_nes_tuple_to_pylink((1, 11))
-            self.__facing_down_subsurface = self.__sprite_sheet.subsurface(
-                pygame.Rect(forward_offset, pylink_config.PYLINK_TILE_SIZE))
-            self.__facing_down_subsurface.set_colorkey(
-                self.__facing_down_subsurface.get_at((0, 0)))
-            # Turn off alpha so that colorkey works for transparency
-            self.__facing_down_subsurface.set_alpha(None)
-        return self.__facing_down_subsurface
+        for index, offset in enumerate([(1, 11), (18, 11)]):
+            if self.__facing_down_subsurface[index] is None:
+                self.__facing_down_subsurface[index] = self.__sprite_sheet.subsurface(
+                pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
+                self.__facing_down_subsurface[index].set_colorkey(
+                    self.__facing_down_subsurface[index].get_at((0, 0)))
+                # Turn off alpha so that colorkey works for transparency
+                self.__facing_down_subsurface[index].set_alpha(None)
+        return self.__facing_down_subsurface[0]
 
     def left_keydown(self):
         """
