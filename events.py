@@ -3,6 +3,7 @@ Detects and dispaches event.s
 """
 import sys
 import pygame
+import pylink_config
 from link import Link
 
 class Events(object):
@@ -51,7 +52,8 @@ class Events(object):
     # event loop when a particular event occurs
     __event_switcher = {
         pygame.QUIT: lambda self, event: sys.exit(),
-        pygame.KEYDOWN: lambda self, event: self.__keydown_switcher.get(event.key, lambda self: None)(self)
+        pygame.KEYDOWN: lambda self, event: self.__keydown_switcher.get(event.key, lambda self: None)(self),  # pylint: disable=protected-access
+        pylink_config.TOGGLE_LINKS_STEPS: lambda self, event: self.link.toggle_steps()
     }
 
     def process(self):

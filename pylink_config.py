@@ -50,3 +50,14 @@ WINDOW_SIZE = tuple(
 #: The upper left location for the map in pixels.
 #: This does leave room for the score board.
 MAP_UPPER_LEFT = tuple(map(int, numpy.multiply(TILE_SIZE, (0, 4))))
+
+#
+# Timing for the main character (Link)
+#
+LINK_STEP_TOGGLE_INTERVAL_MSECS = 100
+
+# User defined events.
+# These are placed here so they can be shared because the events module
+# imports the other modules that need this information, and defining
+# them in the events module itself causes a circular dependency.
+TOGGLE_LINKS_STEPS = pygame.USEREVENT + 1
