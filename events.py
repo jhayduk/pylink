@@ -48,11 +48,22 @@ class Events(object):
     }
 
     # In order to mimic a switch statement, the functions called for
+    # each keyup event are listed here and then called from the
+    # __event_switcher whenever a keyup event occurs
+    __keyup_switcher = {
+        pygame.K_LEFT: lambda self: self.link.arrow_keyup(),
+        pygame.K_UP: lambda self: self.link.arrow_keyup(),
+        pygame.K_RIGHT: lambda self: self.link.arrow_keyup(),
+        pygame.K_DOWN: lambda self: self.link.arrow_keyup()
+    }
+
+    # In order to mimic a switch statement, the functions called for
     # each of the events received are listed here and then called within the
     # event loop when a particular event occurs
     __event_switcher = {
         pygame.QUIT: lambda self, event: sys.exit(),
         pygame.KEYDOWN: lambda self, event: self.__keydown_switcher.get(event.key, lambda self: None)(self),  # pylint: disable=protected-access
+        pygame.KEYUP: lambda self, event: self.__keyup_switcher.get(event.key, lambda self: None)(self),  # pylint: disable=protected-access
         pylink_config.TOGGLE_LINKS_STEPS: lambda self, event: self.link.toggle_steps()
     }
 

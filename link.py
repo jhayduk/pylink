@@ -153,6 +153,12 @@ class Link(object):
         self.__moving = True
         self.__current_subsurface = self.__get_facing_down_subsurface(self.__step)
 
+    def arrow_keyup(self):
+        """
+        This method is called when any arrow key is released.
+        """
+        self.__moving = False
+
     # Used to simulate a switch statement for toggle_steps.
     # This is indexed by self.__facing
     __toggle_steps_switcher = {
@@ -167,11 +173,12 @@ class Link(object):
         If Link is moving, toggle the __step setting and set the
         __current_surface to the correct one with the new step.
         """
-        if self.__step == 0:
-            self.__step = 1
-        else:
-            self.__step = 0
-        self.__current_subsurface = self.__toggle_steps_switcher.get(self.__facing, lambda self, step: print("Unknown facing direction: ", self.__facing))(self, self.__step)
+        if self.__moving:
+            if self.__step == 0:
+                self.__step = 1
+            else:
+                self.__step = 0
+            self.__current_subsurface = self.__toggle_steps_switcher.get(self.__facing, lambda self, step: print("Unknown facing direction: ", self.__facing))(self, self.__step)
 
     def blit(self):
         """
