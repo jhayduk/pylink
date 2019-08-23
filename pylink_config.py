@@ -54,10 +54,15 @@ MAP_UPPER_LEFT = tuple(map(int, numpy.multiply(TILE_SIZE, (0, 4))))
 #
 # Timing for the main character (Link)
 #
-LINK_STEP_TOGGLE_INTERVAL_MSECS = 100
+LINK_MOVE_INTERVAL_MSECS = 50
+LINK_STOPPED_VELOCITY = (0, 0)
+LINK_MOVE_LEFT_VELOCITY = scale_nes_tuple_to_pylink((-6, 0))
+LINK_MOVE_UP_VELOCITY = scale_nes_tuple_to_pylink((0, -6))
+LINK_MOVE_RIGHT_VELOCITY = scale_nes_tuple_to_pylink((6, 0))
+LINK_MOVE_DOWN_VELOCITY = scale_nes_tuple_to_pylink((0, 6))
 
 # User defined events.
 # These are placed here so they can be shared because the events module
 # imports the other modules that need this information, and defining
 # them in the events module itself causes a circular dependency.
-TOGGLE_LINKS_STEPS = pygame.USEREVENT + 1
+MOVE_LINK = pygame.USEREVENT + 1

@@ -42,12 +42,12 @@ class Link(object):
             self.__sprite_sheet.convert()
 
             # Start the periodic event for changing steps. When this fires,
-            # this class' toggle_steps() method will be caled and, if Link
+            # this class' move() method will be caled and, if Link
             # is moving, the self.__step setting will toggle so that the
             # code knows which of the two sprites to show.
-            # Once started, the toggle_steps() method will get called
+            # Once started, the move() method will get called
             # periodically.
-            pygame.time.set_timer(pylink_config.TOGGLE_LINKS_STEPS, pylink_config.LINK_STEP_TOGGLE_INTERVAL_MSECS)
+            pygame.time.set_timer(pylink_config.MOVE_LINK, pylink_config.LINK_MOVE_INTERVAL_MSECS)
 
             # Setup Link's initial position.
             # Link's topleft corner ends up in the center instead of him being dead
@@ -59,6 +59,7 @@ class Link(object):
             self.__step = 0
             self.__current_subsurface = self.__get_facing_down_subsurface(
                 self.__step)
+            self.__velocity = pylink_config.LINK_STOPPED_VELOCITY
             Link.__instance = self
 
     __facing_left_subsurface = [None, None]
@@ -66,17 +67,28 @@ class Link(object):
         """
         Return the subsurface that contains Link facing left.
         """
-        for index, offset in enumerate([(35, 11), (52, 11)]):
-            if self.__facing_left_subsurface[index] is None:
-                self.__facing_left_subsurface[index] = self.__sprite_sheet.subsurface(pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
-                self.__facing_left_subsurface[index].set_colorkey(
-                    self.__facing_left_subsurface[index].get_at((0, 0)))
-                # The image in the sprite sheet is actually facing right, flip
-                # it to face left
-                self.__facing_left_subsurface[index] = pygame.transform.flip(
-                    self.__facing_left_subsurface[index], True, False)
-                # Turn off alpha so that colorkey works for transparency
-                self.__facing_left_subsurface[index].set_alpha(None)
+        if self.__facing_left_subsurface[0] is None:
+            self.__facing_left_subsurface[0] = self.__sprite_sheet.subsurface(
+                pygame.Rect(pylink_config.scale_nes_tuple_to_pylink((35, 11)), pylink_config.scale_nes_tuple_to_pylink((15, 16))))
+            self.__facing_left_subsurface[0].set_colorkey(
+                self.__facing_left_subsurface[0].get_at((0, 0)))
+            # The image in the sprite sheet is actually facing right, flip
+            # it to face left
+            self.__facing_left_subsurface[0] = pygame.transform.flip(
+                self.__facing_left_subsurface[0], True, False)
+            # Turn off alpha so that colorkey works for transparency
+            self.__facing_left_subsurface[0].set_alpha(None)
+        if self.__facing_left_subsurface[1] is None:
+            self.__facing_left_subsurface[1] = self.__sprite_sheet.subsurface(
+                pygame.Rect(pylink_config.scale_nes_tuple_to_pylink((52, 12)), pylink_config.scale_nes_tuple_to_pylink((14, 15))))
+            self.__facing_left_subsurface[1].set_colorkey(
+                self.__facing_left_subsurface[1].get_at((0, 0)))
+            # The image in the sprite sheet is actually facing right, flip
+            # it to face left
+            self.__facing_left_subsurface[1] = pygame.transform.flip(
+                self.__facing_left_subsurface[1], True, False)
+            # Turn off alpha so that colorkey works for transparency
+            self.__facing_left_subsurface[1].set_alpha(None)
         return self.__facing_left_subsurface[step]
 
     __facing_up_subsurface = [None, None]
@@ -86,7 +98,8 @@ class Link(object):
         """
         for index, offset in enumerate([(69, 11), (86, 11)]):
             if self.__facing_up_subsurface[index] is None:
-                self.__facing_up_subsurface[index] = self.__sprite_sheet.subsurface(pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
+                self.__facing_up_subsurface[index] = self.__sprite_sheet.subsurface(pygame.Rect(
+                    pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.scale_nes_tuple_to_pylink((14, 16))))
                 self.__facing_up_subsurface[index].set_colorkey(
                     self.__facing_up_subsurface[index].get_at((0, 0)))
                 # Turn off alpha so that colorkey works for transparency
@@ -98,13 +111,20 @@ class Link(object):
         """
         Return the subsurface that contains Link facing right.
         """
-        for index, offset in enumerate([(35, 11), (52, 11)]):
-            if self.__facing_right_subsurface[index] is None:
-                self.__facing_right_subsurface[index] = self.__sprite_sheet.subsurface(
-                    pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
-                self.__facing_right_subsurface[index].set_colorkey(self.__facing_right_subsurface[index].get_at((0, 0)))
-                # Turn off alpha so that colorkey works for transparency
-                self.__facing_right_subsurface[index].set_alpha(None)
+        if self.__facing_right_subsurface[0] is None:
+            self.__facing_right_subsurface[0] = self.__sprite_sheet.subsurface(
+                pygame.Rect(pylink_config.scale_nes_tuple_to_pylink((35, 11)), pylink_config.scale_nes_tuple_to_pylink((15, 16))))
+            self.__facing_right_subsurface[0].set_colorkey(
+                self.__facing_right_subsurface[0].get_at((0, 0)))
+            # Turn off alpha so that colorkey works for transparency
+            self.__facing_right_subsurface[0].set_alpha(None)
+        if self.__facing_right_subsurface[1] is None:
+            self.__facing_right_subsurface[1] = self.__sprite_sheet.subsurface(
+                pygame.Rect(pylink_config.scale_nes_tuple_to_pylink((52, 12)), pylink_config.scale_nes_tuple_to_pylink((14, 15))))
+            self.__facing_right_subsurface[1].set_colorkey(
+                self.__facing_right_subsurface[1].get_at((0, 0)))
+            # Turn off alpha so that colorkey works for transparency
+            self.__facing_right_subsurface[1].set_alpha(None)
         return self.__facing_right_subsurface[step]
 
     __facing_down_subsurface = [None, None]
@@ -114,7 +134,8 @@ class Link(object):
         """
         for index, offset in enumerate([(1, 11), (18, 11)]):
             if self.__facing_down_subsurface[index] is None:
-                self.__facing_down_subsurface[index] = self.__sprite_sheet.subsurface(pygame.Rect(pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.PYLINK_TILE_SIZE))
+                self.__facing_down_subsurface[index] = self.__sprite_sheet.subsurface(pygame.Rect(
+                    pylink_config.scale_nes_tuple_to_pylink(offset), pylink_config.scale_nes_tuple_to_pylink((15, 16))))
                 self.__facing_down_subsurface[index].set_colorkey(
                     self.__facing_down_subsurface[index].get_at((0, 0)))
                 # Turn off alpha so that colorkey works for transparency
@@ -127,7 +148,9 @@ class Link(object):
         """
         self.__facing = "left"
         self.__moving = True
-        self.__current_subsurface = self.__get_facing_left_subsurface(self.__step)
+        self.__velocity = pylink_config.LINK_MOVE_LEFT_VELOCITY
+        self.__current_subsurface = self.__get_facing_left_subsurface(
+            self.__step)
 
     def up_keydown(self):
         """
@@ -135,7 +158,9 @@ class Link(object):
         """
         self.__facing = "up"
         self.__moving = True
-        self.__current_subsurface = self.__get_facing_up_subsurface(self.__step)
+        self.__velocity = pylink_config.LINK_MOVE_UP_VELOCITY
+        self.__current_subsurface = self.__get_facing_up_subsurface(
+            self.__step)
 
     def right_keydown(self):
         """
@@ -143,7 +168,9 @@ class Link(object):
         """
         self.__facing = "right"
         self.__moving = True
-        self.__current_subsurface = self.__get_facing_right_subsurface(self.__step)
+        self.__velocity = pylink_config.LINK_MOVE_RIGHT_VELOCITY
+        self.__current_subsurface = self.__get_facing_right_subsurface(
+            self.__step)
 
     def down_keydown(self):
         """
@@ -151,15 +178,18 @@ class Link(object):
         """
         self.__facing = "down"
         self.__moving = True
-        self.__current_subsurface = self.__get_facing_down_subsurface(self.__step)
+        self.__velocity = pylink_config.LINK_MOVE_DOWN_VELOCITY
+        self.__current_subsurface = self.__get_facing_down_subsurface(
+            self.__step)
 
     def arrow_keyup(self):
         """
         This method is called when any arrow key is released.
         """
         self.__moving = False
+        self.__velocity = pylink_config.LINK_STOPPED_VELOCITY
 
-    # Used to simulate a switch statement for toggle_steps.
+    # Used to simulate a switch statement for move.
     # This is indexed by self.__facing
     __toggle_steps_switcher = {
         "left": lambda self, step: self.__get_facing_left_subsurface(step),  # pylint: disable=protected-access
@@ -168,10 +198,11 @@ class Link(object):
         "right": lambda self, step: self.__get_facing_right_subsurface(step)  # pylint: disable=protected-access
     }
 
-    def toggle_steps(self):
+    def move(self):
         """
-        If Link is moving, toggle the __step setting and set the
-        __current_surface to the correct one with the new step.
+        If Link is moving, toggle the __step setting, set the
+        __current_surface to the correct one with the new step,
+        and shift the location set by __topleft
         """
         if self.__moving:
             if self.__step == 0:
@@ -179,6 +210,7 @@ class Link(object):
             else:
                 self.__step = 0
             self.__current_subsurface = self.__toggle_steps_switcher.get(self.__facing, lambda self, step: print("Unknown facing direction: ", self.__facing))(self, self.__step)
+            self.__topleft = tuple(numpy.add(self.__topleft, self.__velocity))
 
     def blit(self):
         """

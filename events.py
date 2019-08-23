@@ -64,7 +64,7 @@ class Events(object):
         pygame.QUIT: lambda self, event: sys.exit(),
         pygame.KEYDOWN: lambda self, event: self.__keydown_switcher.get(event.key, lambda self: None)(self),  # pylint: disable=protected-access
         pygame.KEYUP: lambda self, event: self.__keyup_switcher.get(event.key, lambda self: None)(self),  # pylint: disable=protected-access
-        pylink_config.TOGGLE_LINKS_STEPS: lambda self, event: self.link.toggle_steps()
+        pylink_config.MOVE_LINK: lambda self, event: self.link.move()
     }
 
     def process(self):
