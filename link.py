@@ -243,32 +243,28 @@ class Link(object):
         # the corners facing the move
         if self.__facing == "left":
             current_locations_colors = (
-                pygame.display.get_surface().get_at(fromRect.topleft),
                 pygame.display.get_surface().get_at(fromRect.midleft),
                 pygame.display.get_surface().get_at(fromRect.bottomleft)
             )
             next_locations_colors = (
-                pygame.display.get_surface().get_at(toRect.topleft),
                 pygame.display.get_surface().get_at(toRect.midleft),
                 pygame.display.get_surface().get_at(toRect.bottomleft)
             )
         elif self.__facing == "up":
             current_locations_colors = (
-                pygame.display.get_surface().get_at(fromRect.topleft),
-                pygame.display.get_surface().get_at(fromRect.topright)
+                pygame.display.get_surface().get_at(fromRect.midleft),
+                pygame.display.get_surface().get_at(fromRect.midright)
             )
             next_locations_colors = (
-                pygame.display.get_surface().get_at(toRect.topleft),
-                pygame.display.get_surface().get_at(toRect.topright)
+                pygame.display.get_surface().get_at(toRect.midleft),
+                pygame.display.get_surface().get_at(toRect.midright)
             )
         elif self.__facing == "right":
             current_locations_colors = (
-                pygame.display.get_surface().get_at(fromRect.topright),
                 pygame.display.get_surface().get_at(fromRect.midright),
                 pygame.display.get_surface().get_at(fromRect.bottomright)
             )
             next_locations_colors = (
-                pygame.display.get_surface().get_at(toRect.topright),
                 pygame.display.get_surface().get_at(toRect.midright),
                 pygame.display.get_surface().get_at(toRect.bottomright)
             )
