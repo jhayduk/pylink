@@ -228,6 +228,8 @@ class Link(object):
         Determine if it is valid to move the Link rectangle from the fromRect
         to the toRect locations on the current map.
         Return True if it is OK, and False if not.
+        If there an IndexError occurs at any point in the calculations,
+        assume it is not safe to move and return False
 
         Right now this is cheating a bit and using the color of the
         pixels at corners of Link's bounding rectangle in the direction of
@@ -241,46 +243,49 @@ class Link(object):
         """
         # Get the color of the pixel at Link's current  and next locations on
         # the corners facing the move
-        if self.__facing == "left":
-            current_locations_colors = (
-                pygame.display.get_surface().get_at(fromRect.midleft),
-                pygame.display.get_surface().get_at(fromRect.bottomleft)
-            )
-            next_locations_colors = (
-                pygame.display.get_surface().get_at(toRect.midleft),
-                pygame.display.get_surface().get_at(toRect.bottomleft)
-            )
-        elif self.__facing == "up":
-            current_locations_colors = (
-                pygame.display.get_surface().get_at(fromRect.midleft),
-                pygame.display.get_surface().get_at(fromRect.midright)
-            )
-            next_locations_colors = (
-                pygame.display.get_surface().get_at(toRect.midleft),
-                pygame.display.get_surface().get_at(toRect.midright)
-            )
-        elif self.__facing == "right":
-            current_locations_colors = (
-                pygame.display.get_surface().get_at(fromRect.midright),
-                pygame.display.get_surface().get_at(fromRect.bottomright)
-            )
-            next_locations_colors = (
-                pygame.display.get_surface().get_at(toRect.midright),
-                pygame.display.get_surface().get_at(toRect.bottomright)
-            )
-        elif self.__facing == "down":
-            current_locations_colors = (
-                pygame.display.get_surface().get_at(fromRect.bottomleft),
-                pygame.display.get_surface().get_at(fromRect.midbottom),
-                pygame.display.get_surface().get_at(fromRect.bottomright)
-            )
-            next_locations_colors = (
-                pygame.display.get_surface().get_at(toRect.bottomleft),
-                pygame.display.get_surface().get_at(toRect.midbottom),
-                pygame.display.get_surface().get_at(toRect.bottomright)
-            )
-        else:
-            raise Exception("Unknown facing direction: '" + self.__facing + "'");
+        try:
+            if self.__facing == "left":
+                current_locations_colors = (
+                    pygame.display.get_surface().get_at(fromRect.midleft),
+                    pygame.display.get_surface().get_at(fromRect.bottomleft)
+                )
+                next_locations_colors = (
+                    pygame.display.get_surface().get_at(toRect.midleft),
+                    pygame.display.get_surface().get_at(toRect.bottomleft)
+                )
+            elif self.__facing == "up":
+                current_locations_colors = (
+                    pygame.display.get_surface().get_at(fromRect.midleft),
+                    pygame.display.get_surface().get_at(fromRect.midright)
+                )
+                next_locations_colors = (
+                    pygame.display.get_surface().get_at(toRect.midleft),
+                    pygame.display.get_surface().get_at(toRect.midright)
+                )
+            elif self.__facing == "right":
+                current_locations_colors = (
+                    pygame.display.get_surface().get_at(fromRect.midright),
+                    pygame.display.get_surface().get_at(fromRect.bottomright)
+                )
+                next_locations_colors = (
+                    pygame.display.get_surface().get_at(toRect.midright),
+                    pygame.display.get_surface().get_at(toRect.bottomright)
+                )
+            elif self.__facing == "down":
+                current_locations_colors = (
+                    pygame.display.get_surface().get_at(fromRect.bottomleft),
+                    pygame.display.get_surface().get_at(fromRect.midbottom),
+                    pygame.display.get_surface().get_at(fromRect.bottomright)
+                )
+                next_locations_colors = (
+                    pygame.display.get_surface().get_at(toRect.bottomleft),
+                    pygame.display.get_surface().get_at(toRect.midbottom),
+                    pygame.display.get_surface().get_at(toRect.bottomright)
+                )
+            else:
+                raise Exception("Unknown facing direction: '" + self.__facing + "'")
+        except IndexError:
+            return False
 
         # Return whether they are the same or not
         return current_locations_colors == next_locations_colors
