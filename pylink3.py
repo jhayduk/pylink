@@ -32,7 +32,10 @@ if __name__ == '__main__':
 
     # Create a box for the score board
     score_board = pygame.Surface(pylink_config.PYLINK_SCOREBOARD.size)  # pylint: disable=invalid-name
-    score_board.fill((0, 0, 0))
+    # The color of the scoreboard is "nearly black". The exact color Black
+    # is reserved for the cave and dungeon entrances and is used by the code
+    # to detect when Link is going in there.
+    score_board.fill((1, 1, 1))
     score_board.convert()
     score_board_rect = score_board.get_rect()  # pylint: disable=invalid-name
 

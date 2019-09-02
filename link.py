@@ -28,10 +28,10 @@ class Link(object):
     def __init__(self):
         """
         Virtually private constructor.
-        DO NOT USE 'new Link()', use 'Link.get_instance()' instead.
+        DO NOT USE 'Link()', use 'Link.get_instance()' instead.
         """
         if Link.__instance is not None:
-            raise Exception("This class is a singleton. Use 'Link.get_instance()' instead of 'new Link()'")
+            raise Exception("This class is a singleton. Use 'Link.get_instance()' instead of 'Link()'")
         else:
             # Load the sprite sheet with all of Link's images, and scale it
             # to the game's scale.
@@ -56,13 +56,16 @@ class Link(object):
             self.__facing = "down"
             self.__moving = False
             self.__step = 0
+            self.__facing_left_subsurface = [None, None]
+            self.__facing_up_subsurface = [None, None]
+            self.__facing_right_subsurface = [None, None]
+            self.__facing_down_subsurface = [None, None]
             self.__current_subsurface = self.__get_facing_down_subsurface(
                 self.__step)
             self.__rect = pygame.Rect(pylink_config.PYLINK_MAP.center, self.__current_subsurface.get_size())
             self.__velocity = pylink_config.LINK_STOPPED_VELOCITY
             Link.__instance = self
 
-    __facing_left_subsurface = [None, None]
     def __get_facing_left_subsurface(self, step):
         """
         Return the subsurface that contains Link facing left.
@@ -94,7 +97,6 @@ class Link(object):
             self.__facing_left_subsurface[1].set_alpha(None)
         return self.__facing_left_subsurface[step]
 
-    __facing_up_subsurface = [None, None]
     def __get_facing_up_subsurface(self, step):
         """
         Return the subsurface that contains Link facing up.
@@ -111,7 +113,6 @@ class Link(object):
                 self.__facing_up_subsurface[index].set_alpha(None)
         return self.__facing_up_subsurface[step]
 
-    __facing_right_subsurface = [None, None]
     def __get_facing_right_subsurface(self, step):
         """
         Return the subsurface that contains Link facing right.
@@ -134,7 +135,6 @@ class Link(object):
             self.__facing_right_subsurface[1].set_alpha(None)
         return self.__facing_right_subsurface[step]
 
-    __facing_down_subsurface = [None, None]
     def __get_facing_down_subsurface(self, step):
         """
         Return the subsurface that contains Link facing down.
@@ -223,64 +223,65 @@ class Link(object):
         "right": lambda self, step: self.__get_facing_right_subsurface(step)  # pylint: disable=protected-access
     }
 
-    def __it_is_ok_to_move(self, fromRect, toRect):
+    def __it_is_ok_to_move(self, to_rect):
         """
-        Determine if it is valid to move the Link rectangle from the fromRect
-        to the toRect locations on the current map.
+        Determine if it is valid to move the Link rectangle
+        to the to_rect location on the current map.
         Return True if it is OK, and False if not.
         If there an IndexError occurs at any point in the calculations,
         assume it is not safe to move and return False
 
         Right now this is cheating a bit and using the color of the
-        pixels at corners of Link's bounding rectangle in the direction of
-        movement and comparing them with the ones at the new location.
-        If they are the same, it is assumed that it must be OK to move there,
-        because it is, apparanetly, just as OK to stay in this position. This
-        does assume that the pixel at that location on the surface is the
-        color of the pixel in the background which means that the pixel
-        has to be transparent on Link's image. Because of this, only some
-        directions check the midpoint.
+        pixels at corners of Link's current bounding rectangle in the
+        direction of movement and comparing them with the ones at the
+        proposed newn location. If they are the same, it is assumed that it
+        must be OK to move there, because it is, apparanetly, just as OK to
+        stay in this position. This does assume that the pixel at that
+        location on the surface is the color of the pixel in the background
+        which means that the pixel has to be transparent on Link's image.
+        Because of this, only some directions check the midpoint while
+        others do not.
         """
-        # Get the color of the pixel at Link's current  and next locations on
-        # the corners facing the move
+        # Get the color of the pixel at Link's current location and at the
+        # propesed next location on the corners facing the move
         try:
             if self.__facing == "left":
                 current_locations_colors = (
-                    pygame.display.get_surface().get_at(fromRect.midleft),
-                    pygame.display.get_surface().get_at(fromRect.bottomleft)
+                    pygame.display.get_surface().get_at(self.__rect.midleft),
+                    pygame.display.get_surface().get_at(self.__rect.bottomleft)
                 )
                 next_locations_colors = (
-                    pygame.display.get_surface().get_at(toRect.midleft),
-                    pygame.display.get_surface().get_at(toRect.bottomleft)
+                    pygame.display.get_surface().get_at(to_rect.midleft),
+                    pygame.display.get_surface().get_at(to_rect.bottomleft)
                 )
             elif self.__facing == "up":
                 current_locations_colors = (
-                    pygame.display.get_surface().get_at(fromRect.midleft),
-                    pygame.display.get_surface().get_at(fromRect.midright)
+                    pygame.display.get_surface().get_at(self.__rect.midleft),
+                    pygame.display.get_surface().get_at(self.__rect.midright)
                 )
                 next_locations_colors = (
-                    pygame.display.get_surface().get_at(toRect.midleft),
-                    pygame.display.get_surface().get_at(toRect.midright)
+                    pygame.display.get_surface().get_at(to_rect.midleft),
+                    pygame.display.get_surface().get_at(to_rect.midright)
                 )
             elif self.__facing == "right":
                 current_locations_colors = (
-                    pygame.display.get_surface().get_at(fromRect.midright),
-                    pygame.display.get_surface().get_at(fromRect.bottomright)
+                    pygame.display.get_surface().get_at(self.__rect.midright),
+                    pygame.display.get_surface().get_at(self.__rect.bottomright)
                 )
                 next_locations_colors = (
-                    pygame.display.get_surface().get_at(toRect.midright),
-                    pygame.display.get_surface().get_at(toRect.bottomright)
+                    pygame.display.get_surface().get_at(to_rect.midright),
+                    pygame.display.get_surface().get_at(to_rect.bottomright)
                 )
             elif self.__facing == "down":
                 current_locations_colors = (
-                    pygame.display.get_surface().get_at(fromRect.bottomleft),
-                    pygame.display.get_surface().get_at(fromRect.midbottom),
-                    pygame.display.get_surface().get_at(fromRect.bottomright)
+                    pygame.display.get_surface().get_at(self.__rect.bottomleft),
+                    pygame.display.get_surface().get_at(self.__rect.midbottom),
+                    pygame.display.get_surface().get_at(self.__rect.bottomright)
                 )
                 next_locations_colors = (
-                    pygame.display.get_surface().get_at(toRect.bottomleft),
-                    pygame.display.get_surface().get_at(toRect.midbottom),
-                    pygame.display.get_surface().get_at(toRect.bottomright)
+                    pygame.display.get_surface().get_at(to_rect.bottomleft),
+                    pygame.display.get_surface().get_at(to_rect.midbottom),
+                    pygame.display.get_surface().get_at(to_rect.bottomright)
                 )
             else:
                 raise Exception("Unknown facing direction: '" + self.__facing + "'")
@@ -312,9 +313,9 @@ class Link(object):
             # Calculate the bounding rectangle of the planned next location
             next_rect = self.__rect.move(self.__velocity)
 
-            # See if it is clear to move to that next location and
+            # See if it is clear to move to the next location and
             # move if it is clear to do so
-            if self.__it_is_ok_to_move(self.__rect, next_rect):
+            if self.__it_is_ok_to_move(next_rect):
                 self.__rect = self.__rect.move(self.__velocity)
 
     def blit(self):
