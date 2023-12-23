@@ -4,26 +4,16 @@ Just something to do to brush up on python
 
 ## Setup
 ```
-sudo -H pip install pygame pyLint
-sudo -H pip install pylint
+pipenv install
 ```
 
 ## Test
 ```
-pylint *.py && pytest -v && python pylink.py
+pipenv run pylint *.py && pipenv run pytest -v
 ```
 
 
 ## Run
 ```
-python pylink.py
+pipenv run python pylink3.py
 ```
-
-## Run (pylink3)
-```
-python3 pylink3.py
-```
-
-## Notes
-- PEP8 Style
-- Google style doc strings
