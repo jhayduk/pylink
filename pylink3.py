@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 pylink3 - a Python3 version of NES Legend of Zelda
 

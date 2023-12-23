@@ -3,12 +3,13 @@ import pytest
 import pygame
 import tile_loader
 
+
 #pylint: disable-msg=no-self-use,too-few-public-methods,line-too-long
 class TestCountTiles(object):
     """Tests for tile_loader.py::count_tiles()"""
 
     def test_count_tiles(self):
-        """Should return the the correct number of tiles in each row and column"""
+        """Should return the correct number of tiles in each row and column"""
         num_tiles_in_each_row, num_tiles_in_each_col = tile_loader.count_tiles(
             image=pygame.image.load("assets/NES-TheLegendofZelda-OverworldTiles.png"),
             tile_size=(16, 16),

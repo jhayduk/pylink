@@ -1,13 +1,19 @@
 """Loads and scales tiles from a sprite sheet file."""
+import math
 import pygame
 import pygame.locals
 import numpy
 import pylink_config
 import game_screen
 
+
 def count_tiles(image, tile_size, border=(0, 0), offset=(0, 0)):
     """
     Count the number of tiles in a loaded image.
+    The "math.floor" portions of the calculations are to account for
+    attestation banners, or other miscellaneous information at the bottom or
+    to the right of the tile set. If this information is at the top or to the
+    left of the tile set, the offset parameter can be used.
 
     Args:
         image: An image loaded with pygame.image.load
@@ -27,11 +33,11 @@ def count_tiles(image, tile_size, border=(0, 0), offset=(0, 0)):
             numpy.subtract(image.get_size(), offset)
         )
     )
-    num_tiles_in_each_row = (
+    num_tiles_in_each_row = math.floor(
         (image_width - border[0])
         / (tile_size[0] + border[0])
     )
-    num_tiles_in_each_col = (
+    num_tiles_in_each_col = math.floor(
         (image_height - border[1])
         / (tile_size[1] + border[1])
     )
