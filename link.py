@@ -22,8 +22,9 @@ class Link(object):
         Use this instead of 'new Link()' to get the player object.
         """
         if Link.__instance is None:
-            Link()
+            Link.__instance = Link()
         return Link.__instance
+
 
     def __init__(self):
         """

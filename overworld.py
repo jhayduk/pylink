@@ -29,7 +29,7 @@ class Overworld(object):
         Use this instead of 'new Overworld()' to get the overworld object.
         """
         if Overworld.__instance is None:
-            Overworld()
+            Overworld.__instance = Overworld()
         return Overworld.__instance
 
     def __init__(self):

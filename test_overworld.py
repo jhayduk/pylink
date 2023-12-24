@@ -1,11 +1,11 @@
-"""Tests for link.py"""
-from link import Link
+"""Tests for overworld.py"""
+from overworld import Overworld
 import pygame
 import pytest
 
 
 class TestLinkConstructors:
-    """Tests for the constructor and get_instance for link.py"""
+    """Tests for the constructor and get_instance for overworld.py"""
 
     @pytest.fixture
     def initialize_display(self):
@@ -16,10 +16,10 @@ class TestLinkConstructors:
 
     def test_get_instance_not_none(self, initialize_display):
         """Should not return None"""
-        assert Link.get_instance() is not None
+        assert Overworld.get_instance() is not None
 
     def test_get_instance_returns_singleton(self, initialize_display):
         """Should return the same object no matter how many times it is called"""
-        first_link_object = Link.get_instance()
-        second_link_object = Link.get_instance()
+        first_link_object = Overworld.get_instance()
+        second_link_object = Overworld.get_instance()
         assert first_link_object is second_link_object
