@@ -20,6 +20,6 @@ class TestLinkConstructors:
 
     def test_get_instance_returns_singleton(self, initialize_display):
         """Should return the same object no matter how many times it is called"""
-        first_link_object = Link.get_instance()
-        second_link_object = Link.get_instance()
-        assert first_link_object is second_link_object
+        first_object = Link.get_instance()
+        second_object = Link.get_instance()
+        assert first_object is second_object

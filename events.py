@@ -1,11 +1,12 @@
 """
-Detects and dispaches event.s
+Detects and dispatches events
 """
 import sys
 import pygame
 import pylink_config
 from link import Link
 
+# TODO: This does not really need to be a class and should be changed to just a module.
 class Events(object):
     """
     The event handler.
@@ -23,7 +24,7 @@ class Events(object):
         Use this instead of 'new Events()' to get the player object.
         """
         if Events.__instance is None:
-            Events()
+            Events.__instance = Events()
         return Events.__instance
 
     def __init__(self):

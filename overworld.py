@@ -66,7 +66,7 @@ class Overworld(object):
         # Next, reset the window's base to (0, 0)
         map_window.topleft = (0, 0)
 
-        # Now, translate the window where it needs to be to be over the correct
+        # Now, translate the window where it needs to be over the correct
         # subregion of the map. (Note that there is a frame around each region)
         map_window = map_window.move(
             ((column * pylink_config.PYLINK_MAP.width) + ((column + 1) * pylink_config.NES_TO_PYLINK_SCALE_FACTOR * 1)),
