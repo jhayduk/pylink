@@ -10,7 +10,7 @@ class Link(object):
     """
     The Link player object.
     This is a singleton object and must only be accessed with
-    Link.getInstance(). That function will take care of creating the instance
+    Link.get_instance(). That function will take care of creating the instance
     the first time it is called.
     """
     __instance = None
