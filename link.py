@@ -51,7 +51,7 @@ class Link(object):
             pygame.time.set_timer(pylink_config.MOVE_LINK, pylink_config.LINK_MOVE_INTERVAL_MSECS)
 
             # Setup Link's initial position.
-            # Link's topleft corner ends up in the center instead of him being dead
+            # Link's top left corner ends up in the center instead of him being dead
             # center at the start, but the tiles around are clear and this works
             # just fine.
             self.__facing = "down"
@@ -161,7 +161,7 @@ class Link(object):
         self.__velocity = pylink_config.LINK_MOVE_LEFT_VELOCITY
         self.__current_subsurface = self.__get_facing_left_subsurface(
             self.__step)
-        # Not every image of Link is the same size, so recalculate the
+        # Not every image of Link is the same size, so recalculate
         # his bounding rectangle after possibly switching facing direction.
         self.__rect = pygame.Rect(
             self.__rect.topleft, self.__current_subsurface.get_size())
@@ -175,7 +175,7 @@ class Link(object):
         self.__velocity = pylink_config.LINK_MOVE_UP_VELOCITY
         self.__current_subsurface = self.__get_facing_up_subsurface(
             self.__step)
-        # Not every image of Link is the same size, so recalculate the
+        # Not every image of Link is the same size, so recalculate
         # his bounding rectangle after possibly switching facing direction.
         self.__rect = pygame.Rect(
             self.__rect.topleft, self.__current_subsurface.get_size())
@@ -189,7 +189,7 @@ class Link(object):
         self.__velocity = pylink_config.LINK_MOVE_RIGHT_VELOCITY
         self.__current_subsurface = self.__get_facing_right_subsurface(
             self.__step)
-        # Not every image of Link is the same size, so recalculate the
+        # Not every image of Link is the same size, so recalculate
         # his bounding rectangle after possibly switching facing direction.
         self.__rect = pygame.Rect(
             self.__rect.topleft, self.__current_subsurface.get_size())
@@ -203,7 +203,7 @@ class Link(object):
         self.__velocity = pylink_config.LINK_MOVE_DOWN_VELOCITY
         self.__current_subsurface = self.__get_facing_down_subsurface(
             self.__step)
-        # Not every image of Link is the same size, so recalculate the
+        # Not every image of Link is the same size, so recalculate
         # his bounding rectangle after possibly switching facing direction.
         self.__rect = pygame.Rect(
             self.__rect.topleft, self.__current_subsurface.get_size())
@@ -229,14 +229,14 @@ class Link(object):
         Determine if it is valid to move the Link rectangle
         to the to_rect location on the current map.
         Return True if it is OK, and False if not.
-        If there an IndexError occurs at any point in the calculations,
+        If an IndexError occurs at any point in the calculations,
         assume it is not safe to move and return False
 
         Right now this is cheating a bit and using the color of the
         pixels at corners of Link's current bounding rectangle in the
         direction of movement and comparing them with the ones at the
-        proposed newn location. If they are the same, it is assumed that it
-        must be OK to move there, because it is, apparanetly, just as OK to
+        proposed new location. If they are the same, it is assumed that it
+        must be OK to move there, because it is, apparently, just as OK to
         stay in this position. This does assume that the pixel at that
         location on the surface is the color of the pixel in the background
         which means that the pixel has to be transparent on Link's image.
@@ -244,7 +244,7 @@ class Link(object):
         others do not.
         """
         # Get the color of the pixel at Link's current location and at the
-        # propesed next location on the corners facing the move
+        # proposed next location on the corners facing the move
         try:
             if self.__facing == "left":
                 current_locations_colors = (
@@ -306,7 +306,7 @@ class Link(object):
                 self.__step = 0
             self.__current_subsurface = self.__toggle_steps_switcher.get(self.__facing, lambda self, step: print("Unknown facing direction: ", self.__facing))(self, self.__step)
 
-            # Not every image of Link is the same size, so recalculate the
+            # Not every image of Link is the same size, so recalculate
             # his bounding rectangle after taking the step
             self.__rect = pygame.Rect(
                 self.__rect.topleft, self.__current_subsurface.get_size())

@@ -6,6 +6,7 @@ import pygame
 import pylink_config
 from link import Link
 
+
 # TODO: This does not really need to be a class and should be changed to just a module.
 class Events(object):
     """
