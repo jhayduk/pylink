@@ -5,6 +5,7 @@ Just something to do to brush up on python
 ## Setup
 ```
 pipenv install
+pre-commit install
 ```
 
 ## Test
