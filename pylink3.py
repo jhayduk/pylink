@@ -58,8 +58,8 @@ if __name__ == '__main__':
         screen.blit(fps_font.render(str(fps), True, pygame.Color('white')), pylink_config.PYLINK_SCOREBOARD)
 
         # Redraw the map area one layer at a time
-        overworld.blit()
-        link.blit()
+        overworld.draw()
+        link.draw()
 
         # Flip the screen to update everything
         # Update the scoreboard section

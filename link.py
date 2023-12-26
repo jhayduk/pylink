@@ -4,6 +4,7 @@ Handles the Link playable character
 import os
 import pygame
 import numpy
+import overworld
 import pylink_config
 
 
@@ -323,9 +324,9 @@ class Link(object):
         done.
         """
         game_window = pygame.display.get_surface().get_rect()
-        if self.facing_direction == "right":
+        if facing_direction == "right":
             self.__rect = self.__rect.move(game_window.left - self.__rect.left, 0)
-        elif self.facing_direction == "left":
+        elif facing_direction == "left":
             self.__rect = self.__rect.move(game_window.right - self.__rect.right, 0)
 
 
@@ -358,10 +359,11 @@ class Link(object):
             if self.can_move_to(next_rect):
                 self.__rect = next_rect
             elif should_switch_maps(next_rect):
+                overworld.Overworld.get_instance().switch_maps(self.facing_direction)
                 self.switch_maps(self.facing_direction)
 
-    def blit(self):
+    def draw(self):
         """
-        Blits Link to his current location on the screen.
+        Draws Link to his current location on the screen.
         """
         pygame.display.get_surface().blit(self.__current_subsurface, self.__rect.topleft)

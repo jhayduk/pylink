@@ -11,6 +11,19 @@ import os
 import pygame
 import pylink_config
 
+#
+# The offsets below are used by switch_map to shift to the next map
+# in a given direction. This is a hash map of direction to offset that
+# can be added to the current submap's index to get to the next one.
+#
+switch_map_offsets = {
+    "right": (1, 0),
+    "down": (0, 1),
+    "left": (-1, 0),
+    "up": (0, -1)
+}
+
+
 class Overworld(object):
     """
     The Overworld map.
@@ -75,8 +88,20 @@ class Overworld(object):
         # Next, create a subsurface where the window is now pointing and return it
         return self.__entire_overworld_map.subsurface(map_window)
 
-    def blit(self):
+    def switch_maps(self, direction):
         """
-        Blits The entire current submap to the main window.
+        Change maps to the next one in the direction of the direction input
+        parameter. This is called from within the move method of the Link
+        character when he is walking off the edge of the current map.
+
+        It is assumed that there is another map in the direction requested.
+        It is the responsibility of the map itself to have a border of
+        blocking tiles on any edge that is the edge of the map.
+        """
+        self.__current_submap = tuple(a+b for a, b in zip(self.__current_submap, switch_map_offsets[direction]))
+
+    def draw(self):
+        """
+        Draws the entire current submap to the main window.
         """
         pygame.display.get_surface().blit(self.__submap(self.__current_submap), pylink_config.PYLINK_MAP)
