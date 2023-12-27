@@ -10,12 +10,11 @@ import pylink_config
 
 def should_switch_maps(next_rect):
     """
-    Check to see if next_rect would be off the current map, and return
+    Check to see if next_rect would be off the map area, and return
     true if it is. This would indicate that the map needs to be
     switched to a new one.
     """
-    current_map = pygame.display.get_surface().get_rect()
-    return not current_map.contains(next_rect)
+    return not pylink_config.PYLINK_MAP.contains(next_rect)
 
 
 class Link(object):
@@ -300,7 +299,7 @@ class Link(object):
                     game_window.get_at(to_rect.bottomright)
                 )
             else:
-                raise Exception("Unknown facing_direction direction: '" + self.facing_direction + "'")
+                raise Exception(f"Unknown facing_direction direction: '{self.facing_direction}'")
         except IndexError:
             return False
 
@@ -323,11 +322,18 @@ class Link(object):
         caller (the move method) has already verified that this move should be
         done.
         """
-        game_window = pygame.display.get_surface().get_rect()
+        game_window = pylink_config.PYLINK_MAP
         if facing_direction == "right":
             self.__rect = self.__rect.move(game_window.left - self.__rect.left, 0)
         elif facing_direction == "left":
             self.__rect = self.__rect.move(game_window.right - self.__rect.right, 0)
+        elif facing_direction == "up":
+            self.__rect = self.__rect.move(0, game_window.bottom - self.__rect.bottom)
+        elif facing_direction == "down":
+            self.__rect = self.__rect.move(0, game_window.top - self.__rect.top)
+        else:
+            raise Exception(f"Unknown facing_direction direction: '{facing_direction}'")
+
 
 
     def move(self):

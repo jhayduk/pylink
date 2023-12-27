@@ -8,6 +8,7 @@ called.
 Only use this module to display the map and to transition to adjacent maps.
 """
 import os
+import numpy
 import pygame
 import pylink_config
 
@@ -98,7 +99,7 @@ class Overworld(object):
         It is the responsibility of the map itself to have a border of
         blocking tiles on any edge that is the edge of the map.
         """
-        self.__current_submap = tuple(a+b for a, b in zip(self.__current_submap, switch_map_offsets[direction]))
+        self.__current_submap = tuple(numpy.add(self.__current_submap, switch_map_offsets[direction]))
 
     def draw(self):
         """

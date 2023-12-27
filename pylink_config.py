@@ -19,7 +19,7 @@ PYLINK_WINDOW = pygame.Rect((0, 0), scale_nes_tuple_to_pylink(NES_WINDOW.size))
 NES_SCOREBOARD = pygame.Rect((0, 0), (256, (4 * 16)))
 PYLINK_SCOREBOARD = pygame.Rect((0, 0), scale_nes_tuple_to_pylink(NES_SCOREBOARD.size))
 
-#: The map section under the map
+#: The map section under the scoreboard
 NES_MAP = pygame.Rect((0, (4 * 16)), (256, (240 - (4 * 16))))
 PYLINK_MAP = pygame.Rect(scale_nes_tuple_to_pylink(NES_MAP.topleft), scale_nes_tuple_to_pylink(NES_MAP.size))
 
@@ -47,8 +47,8 @@ WINDOW_SIZE = tuple(
     )
 )
 
-#: The upper left location for the map in pixels.
-#: This does leave room for the score board.
+# The upper left location for the map in pixels.
+# This does leave room for the score board.
 MAP_UPPER_LEFT = tuple(map(int, numpy.multiply(TILE_SIZE, (0, 4))))
 
 #
