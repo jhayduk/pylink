@@ -62,7 +62,7 @@ LINK_MOVE_RIGHT_VELOCITY = scale_nes_tuple_to_pylink((6, 0))
 LINK_MOVE_DOWN_VELOCITY = scale_nes_tuple_to_pylink((0, 6))
 
 # User defined events.
-# These are placed here so they can be shared because the events module
+# These are placed here, so they can be shared because the events module
 # imports the other modules that need this information, and defining
 # them in the events module itself causes a circular dependency.
 MOVE_LINK = pygame.USEREVENT + 1

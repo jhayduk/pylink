@@ -54,7 +54,7 @@ class Link(object):
             self.__sprite_sheet.convert()
 
             # Start the periodic event for changing steps. When this fires,
-            # this class' move() method will be caled and, if Link
+            # this class' move() method will be called and, if Link
             # is moving, the self.__step setting will toggle so that the
             # code knows which of the two sprites to show.
             # Once started, the move() method will get called
@@ -255,6 +255,11 @@ class Link(object):
         which means that the pixel has to be transparent on Link's image.
         Because of this, only some directions check the midpoint while
         others do not.
+
+        Note that the "right" and "bottom" attributes of Rect are actually
+        outside the actual Rect (they are more a size than a pixel
+        coordinate). This means that these values need to be adjusted when
+        used in the get_at() call to get a pixel.
         """
         # Get the color of the pixel at Link's current location and at the
         # proposed next location on the corners facing_direction the move
@@ -263,40 +268,38 @@ class Link(object):
             if self.facing_direction == "left":
                 current_locations_colors = (
                     game_window.get_at(self.__rect.midleft),
-                    game_window.get_at(self.__rect.bottomleft)
+                    game_window.get_at(tuple(numpy.add(self.__rect.bottomleft, (0, -1))))
                 )
                 next_locations_colors = (
                     game_window.get_at(to_rect.midleft),
-                    game_window.get_at(to_rect.bottomleft)
+                    game_window.get_at(tuple(numpy.add(to_rect.bottomleft, (0, -1))))
                 )
             elif self.facing_direction == "up":
                 current_locations_colors = (
-                    game_window.get_at(self.__rect.midleft),
-                    game_window.get_at(self.__rect.midright)
+                    game_window.get_at(self.__rect.topleft),
+                    game_window.get_at(tuple(numpy.add(self.__rect.topright, (-1, 0))))
                 )
                 next_locations_colors = (
-                    game_window.get_at(to_rect.midleft),
-                    game_window.get_at(to_rect.midright)
+                    game_window.get_at(to_rect.topleft),
+                    game_window.get_at(tuple(numpy.add(to_rect.topright, (-1, 0))))
                 )
             elif self.facing_direction == "right":
                 current_locations_colors = (
-                    game_window.get_at(self.__rect.midright),
-                    game_window.get_at(self.__rect.bottomright)
+                    game_window.get_at(tuple(numpy.add(self.__rect.bottomright, (-1, -1))))
                 )
                 next_locations_colors = (
-                    game_window.get_at(to_rect.midright),
-                    game_window.get_at(to_rect.bottomright)
+                    game_window.get_at(tuple(numpy.add(to_rect.bottomright, (-1, -1))))
                 )
             elif self.facing_direction == "down":
                 current_locations_colors = (
-                    game_window.get_at(self.__rect.bottomleft),
-                    game_window.get_at(self.__rect.midbottom),
-                    game_window.get_at(self.__rect.bottomright)
+                    game_window.get_at(tuple(numpy.add(self.__rect.bottomleft, (0, -1)))),
+                    game_window.get_at(tuple(numpy.add(self.__rect.midbottom, (0, -1)))),
+                    game_window.get_at(tuple(numpy.add(self.__rect.bottomright, (-1, -1))))
                 )
                 next_locations_colors = (
-                    game_window.get_at(to_rect.bottomleft),
-                    game_window.get_at(to_rect.midbottom),
-                    game_window.get_at(to_rect.bottomright)
+                    game_window.get_at(tuple(numpy.add(to_rect.bottomleft, (0, -1)))),
+                    game_window.get_at(tuple(numpy.add(to_rect.midbottom, (0, -1)))),
+                    game_window.get_at(tuple(numpy.add(to_rect.bottomright, (-1, -1))))
                 )
             else:
                 raise Exception(f"Unknown facing_direction direction: '{self.facing_direction}'")
@@ -333,8 +336,6 @@ class Link(object):
             self.__rect = self.__rect.move(0, game_window.top - self.__rect.top)
         else:
             raise Exception(f"Unknown facing_direction direction: '{facing_direction}'")
-
-
 
     def move(self):
         """
