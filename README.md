@@ -10,11 +10,11 @@ pre-commit install
 
 ## Test
 ```
-pipenv run pylint *.py && pipenv run pytest -v
+pipenv run python -m pytest -v tests/
 ```
 
 
 ## Run
 ```
-pipenv run python pylink3.py
+pipenv run python -m pylink3
 ```
