@@ -75,7 +75,7 @@ class Link(object):
             self.__current_subsurface = self.__get_facing_down_subsurface(
                 self.__step)
             self.__rect = pygame.Rect(pylink_config.PYLINK_MAP.center, self.__current_subsurface.get_size())
-            self.__velocity = pylink_config.LINK_STOPPED_VELOCITY
+            self.velocity = pylink_config.LINK_STOPPED_VELOCITY
             Link.__instance = self
 
     def __get_facing_left_subsurface(self, step):
@@ -169,7 +169,7 @@ class Link(object):
         """
         self.facing_direction = "left"
         self.__moving = True
-        self.__velocity = pylink_config.LINK_MOVE_LEFT_VELOCITY
+        self.velocity = pylink_config.LINK_MOVE_LEFT_VELOCITY
         self.__current_subsurface = self.__get_facing_left_subsurface(
             self.__step)
         # Not every image of Link is the same size, so recalculate
@@ -183,7 +183,7 @@ class Link(object):
         """
         self.facing_direction = "up"
         self.__moving = True
-        self.__velocity = pylink_config.LINK_MOVE_UP_VELOCITY
+        self.velocity = pylink_config.LINK_MOVE_UP_VELOCITY
         self.__current_subsurface = self.__get_facing_up_subsurface(
             self.__step)
         # Not every image of Link is the same size, so recalculate
@@ -197,7 +197,7 @@ class Link(object):
         """
         self.facing_direction = "right"
         self.__moving = True
-        self.__velocity = pylink_config.LINK_MOVE_RIGHT_VELOCITY
+        self.velocity = pylink_config.LINK_MOVE_RIGHT_VELOCITY
         self.__current_subsurface = self.__get_facing_right_subsurface(
             self.__step)
         # Not every image of Link is the same size, so recalculate
@@ -211,7 +211,7 @@ class Link(object):
         """
         self.facing_direction = "down"
         self.__moving = True
-        self.__velocity = pylink_config.LINK_MOVE_DOWN_VELOCITY
+        self.velocity = pylink_config.LINK_MOVE_DOWN_VELOCITY
         self.__current_subsurface = self.__get_facing_down_subsurface(
             self.__step)
         # Not every image of Link is the same size, so recalculate
@@ -224,7 +224,7 @@ class Link(object):
         This method is called when any arrow key is released.
         """
         self.__moving = False
-        self.__velocity = pylink_config.LINK_STOPPED_VELOCITY
+        self.velocity = pylink_config.LINK_STOPPED_VELOCITY
 
     # Used to simulate a switch statement for move.
     # This is indexed by self.facing_direction
@@ -357,17 +357,24 @@ class Link(object):
                 self.__rect.topleft, self.__current_subsurface.get_size())
 
             # Calculate the bounding rectangle of the planned next location
-            next_rect = self.__rect.move(self.__velocity)
+            next_rect = self.__rect.move(self.velocity)
 
+            #
             # See if it is clear to move to the next location and
-            # move if it is clear to do so. If the move would go off an edge
-            # of the map, switch maps and move to the other side of the new
-            # map.
+            # move if it is clear to do so.
+            # If the move goe off an edge of the map, switch maps and move to
+            # the other side of the new map.
+            # If it is not clear to move, try reducing the velocity for the
+            # next time around. Essentially, if Link can't move into a spot,
+            # can he squeeze into it?
+            #
             if self.can_move_to(next_rect):
                 self.__rect = next_rect
             elif should_switch_maps(next_rect):
                 overworld.Overworld.get_instance().switch_maps(self.facing_direction)
                 self.switch_maps(self.facing_direction)
+            else:
+                self.velocity = tuple(map(round, numpy.multiply(self.velocity, 0.5)))
 
     def draw(self):
         """
